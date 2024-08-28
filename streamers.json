@@ -1,0 +1,18 @@
+{
+    "piratesoftware": [
+        {
+            "serverID": 1269452860308062208,
+            "ChannelID": 1269554184961654795,
+            "message": "[USER] is live!!! [PING]",
+            "pingroleID": 1269572203176005743
+        }
+    ],
+    "leekbeats": [
+        {
+            "serverID": 1269452860308062208,
+            "ChannelID": 1269554184961654795,
+            "message": "[USER] is live on twitch!!! [PING]",
+            "pingroleID": 1269572203176005743
+        }
+    ]
+}

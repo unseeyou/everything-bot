@@ -1,0 +1,113 @@
+[project]
+name = "everything_bot"
+authors = [
+    { name = "unseeyou", email = "unseeyoubestmod@gmail.com" },
+]
+version = "0.1.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "pytest>=8.2.2",
+    "discord.py>=2.4.0",
+    "pydantic-settings>=2.3.4",
+    "rich>=13.7.1",
+    "aiosqlite>=0.20.0",
+    "chardet>=5.2.0",
+    "pytest-asyncio>=0.23.8",
+    "aiofiles>=24.1.0",
+    "charset-normalizer>=3.3.2",
+    "pillow>=10.4.0",
+]
+description = "Default template for PDM package"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm]
+distribution = false
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff>=0.5.3",
+    "pre-commit>=3.7.1",
+    "pytest>=8.2.2",
+    "pytest-asyncio>=0.23.8",
+    "hypothesis>=6.108.4",
+]
+
+[tool.pdm.scripts]
+test = { cmd = "python -m pytest" }
+
+start = { cmd = "python -m bot" }
+
+lint = { cmd = "ruff check" }
+
+format = { cmd = "ruff format" }
+
+bot = { composite = ["format", "lint", "start"] }
+
+[tool.ruff]
+# Increase the line length. This breaks PEP8, but it is way easier to work with.
+# The original reason for this limit was a standard vim terminal is only 79 characters,
+# but this doesn't really apply anymore.
+line-length = 119
+# Target Python 3.12. If you decide to use a different version of Python
+# you will need to update this value.
+target-version = "py312"
+# Automatically fix auto-fixable issues.
+fix = true
+# Enable all linting rules.
+lint.select = ["ALL"]
+# Ignore some of the most obnoxious linting errors.
+lint.ignore = [
+    # Missing docstrings.
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    # Docstring whitespace.
+    "D202",
+    "D203",
+    "D213",
+    # Docstring punctuation.
+    "D415",
+    # Docstring quotes.
+    "D301",
+    # Builtins.
+    "A",
+    # Print statements.
+    "T20",
+    # TODOs.
+    "TD002",
+    "TD003",
+    "FIX",
+    # Annotations.
+    "ANN101",
+    "ANN102",
+    # Boolean trap.
+    "FBT001",
+    "FBT002",
+]
+
+lint.pydocstyle.convention = "google"
+
+[tool.ruff.format]
+exclude = ["test_*.py"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/{tests,docs,tools}/*" = ["S101", "ANN001"]
+
+[tool.pyright]
+reportUnusedCallResult = "none"
+reportUnknownVariableType = "none"
+reportUnknownMemberType = "none"
+reportImplicitStringConcatenation = "none"
+
+
+[tool.pytest.ini_options]
+minversion = "8.2"
+addopts = "-ra -q"
+python_files = "test_*.py"
+testpaths = ["tests"]
+pythonpath = ["bot"]
