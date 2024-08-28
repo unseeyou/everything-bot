@@ -4,7 +4,7 @@ from bot.errors import PetNameTooShortError
 
 
 class Pet:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str = "Unnamed") -> None:
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
         self.__name = name
