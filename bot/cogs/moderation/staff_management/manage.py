@@ -111,7 +111,11 @@ class StaffManagement(commands.Cog):
 
     @staff.command(name="announcement", description="Send a staff announcement")
     async def send_announcement(
-        self, interaction: Interaction, announcement: str, channel: discord.TextChannel, body: str,
+        self,
+        interaction: Interaction,
+        announcement: str,
+        channel: discord.TextChannel,
+        body: str,
     ) -> None:
         """Send a staff announcement"""
         embed = Embed(

@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 
 from bot.bot import Bot
-from bot.economy.economy_objects import Shop, ShopItem, EconomyUser
 
 
 class ShopCog(commands.Cog):
