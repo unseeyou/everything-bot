@@ -180,7 +180,7 @@ class TwitchStuff(commands.Cog):
         message="the message sent, using [USER] as where the name goes & [PING] as where the ping goes",
         ping_role="the role being pinged in the notification [optional, otherwise @everyone ping]",
     )
-    async def add_live_alerts(
+    async def add_live_alerts(  # noqa: PLR0913, RUF100
         self,
         interaction: discord.Interaction,
         streamer_names: str,
