@@ -7,7 +7,14 @@ bot_shop = Shop(name="Shop", items=[
     Item("Dog", 60, description="Buy a dog to be your pet"),
     Item("Cat", 60, description="Buy a cat to be your pet"),
     Item("Mystery Potion", 15, "I wonder what these do?"),
-    Item("2X Income Potion", 100, "Double your income for a day with this potion."),
-    Item("10X Income Potion", 500, "Make all the money. (lasts 3 hours)"),
-    Item("Cookie", 5, "Yummy."),
+    Item("2X Income Potion", 100, "Make more money. (works 8 times)", "2x_pot"),
+    Item("10X Income Potion", 500, "Make all the money. (works 8 times)", item_id="10x_pot"),
+    Item("Cookie", 5, "Yummy.", item_id="cookie"),
 ])
+
+# duration in hours
+effects = {
+    "2x_pot": {"multiplier": 2, "duration": 8},
+    "10x_pot": {"multiplier": 10, "duration": 8},
+    "cookie": {"multiplier": 1.2, "duration": 2},
+}

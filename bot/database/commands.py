@@ -510,6 +510,7 @@ class SqliteRepository:
             )
 
             await cursor.execute(
+                # effects are stored as {effect: end_date}
                 """
                 CREATE TABLE IF NOT EXISTS effects (
                     user_id INTEGER PRIMARY KEY,
