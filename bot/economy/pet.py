@@ -1,13 +1,13 @@
 import random
 
-from bot.economy.economy_objects import ShopItem
+from bot.errors import PetNameTooShortError
 
 
-class Pet(ShopItem):
-    def __init__(self, name: str, price: int, description: str) -> None:
-        super().__init__(name, price, description)
+class Pet:
+    def __init__(self, name: str) -> None:
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
+        self.__name = name
 
     @property
     def happy(self) -> int:
@@ -16,6 +16,10 @@ class Pet(ShopItem):
     @property
     def hunger(self) -> int:
         return self.__hunger
+
+    @property
+    def name(self) -> str:
+        return self.__name
 
     def play(self) -> None:
         self.__happy += random.randint(1, 5)  # noqa: S311
@@ -37,3 +41,9 @@ class Pet(ShopItem):
             self.__happy = 0
         else:
             self.__happy = happy
+
+    def set_name(self, name: str) -> None:
+        if len(name) > 1:
+            self.__name = name
+        else:
+            raise PetNameTooShortError
