@@ -1,7 +1,5 @@
 import random
 
-from markdown_it.common.html_re import attribute
-
 from bot.economy.economy_objects import ShopItem
 
 
