@@ -8,7 +8,7 @@ from bot.bot import Bot
 
 
 class NotifyEmbed(Embed):
-    def __init__(
+    def __init__(  # noqa: PLR0913, RUF100
         self,
         member: discord.Member,
         reason: str | None,

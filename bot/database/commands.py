@@ -48,6 +48,7 @@ class LogRepository:
                     (guild_id,),
                 )
             await self.database.commit()
+            await self.database.commit()
             return
         async with self.database.cursor() as cursor:
             await cursor.execute(
@@ -228,7 +229,7 @@ class ApplicationsRepository:
             )
             return await cursor.fetchall()
 
-    async def add_application_role(
+    async def add_application_role(  # noqa: PLR0913, RUF100
         self,
         role_name: str,
         guild_id: int,
