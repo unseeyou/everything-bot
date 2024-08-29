@@ -52,6 +52,9 @@ class ShopItem:
         self.__id = item_id
         self.emoji = emoji
 
+    def __str__(self) -> str:
+        return f"('{self.name}', {self.price}, '{self.description}', '{self.item_id}', '{self.emoji}')"
+
     @property
     def item_id(self) -> str:
         return self.__id
@@ -116,11 +119,14 @@ class Inventory:
         self.__items = items
 
     def __str__(self) -> str:
-        return str(self.__items)
+        return str([str(i) for i in self.__items])
 
     @classmethod
     def from_string(cls, string: str) -> "Inventory":
-        items = [ShopItem(**item) for item in literal_eval(string)]
+        items = []
+        for item in literal_eval(string):
+            data = literal_eval(item)
+            items.append(ShopItem(data[0], data[1], data[2], data[3], data[4]))
         return cls(items)
 
     @property
