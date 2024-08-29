@@ -166,3 +166,4 @@ cython_debug/
 database.db
 test.db
 /pdm.lock
+/game.db
