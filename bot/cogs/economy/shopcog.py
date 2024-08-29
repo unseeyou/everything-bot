@@ -48,5 +48,24 @@ class ShopCog(commands.Cog):
         return [discord.app_commands.Choice(name=item.name, value=item.name) for item in bot_shop.items if current.lower() in item.name.lower()]
 
 
+class InventoryCog(commands.Cog):
+    def __init__(self, bot: Bot) -> None:
+        self.bot = bot
+
+    inventory = discord.app_commands.Group(name="inventory", description="Inventory related commands")
+
+    @inventory.command(name="view", description="view your inventory")
+    async def view_inventory(self, interaction: discord.Interaction) -> None:
+        balance = await self.bot.database.economy.get_user_bank(interaction.user.id)
+        user = EconomyUser(interaction.user.id, balance[0], balance[1], Inventory.from_string(balance[2]), self.bot)
+        embed = discord.Embed(
+            title=f"{interaction.user.name}'s Inventory",
+            colour=discord.Colour.from_rgb(141, 111, 100),
+        )
+        for item in user.inventory.items:
+            embed.add_field(name=f"{item.emoji} {item.name}", value=f"*{item.description}*")
+        await interaction.response.send_message(embed=embed)
+
+
 async def setup(bot: Bot) -> None:
     await bot.add_cog(ShopCog(bot))
