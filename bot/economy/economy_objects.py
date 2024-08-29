@@ -45,11 +45,12 @@ class Job:
 
 
 class ShopItem:
-    def __init__(self, name: str, price: int, description: str, item_id: str = "") -> None:
+    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "") -> None:
         self.__name = name
         self.__price = price
         self.__description = description
         self.__id = item_id
+        self.emoji = emoji
 
     @property
     def item_id(self) -> str:
