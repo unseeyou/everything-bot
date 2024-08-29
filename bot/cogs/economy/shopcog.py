@@ -69,3 +69,4 @@ class InventoryCog(commands.Cog):
 
 async def setup(bot: Bot) -> None:
     await bot.add_cog(ShopCog(bot))
+    await bot.add_cog(InventoryCog(bot))
