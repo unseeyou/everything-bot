@@ -509,6 +509,16 @@ class SqliteRepository:
                 """,
             )
 
+            await cursor.execute(
+                # effects are stored as {effect: end_date}
+                """
+                CREATE TABLE IF NOT EXISTS effects (
+                    user_id INTEGER PRIMARY KEY,
+                    effects STRING DEFAULT '{}'
+                )
+                """,
+            )
+
         await self.database.commit()
 
     async def update_auth(self, platform: str, token: str) -> None:

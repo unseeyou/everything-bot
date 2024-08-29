@@ -45,10 +45,16 @@ class Job:
 
 
 class ShopItem:
-    def __init__(self, name: str, price: int, description: str) -> None:
+    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "") -> None:  # noqa: PLR0913, RUF100
         self.__name = name
         self.__price = price
         self.__description = description
+        self.__id = item_id
+        self.emoji = emoji
+
+    @property
+    def item_id(self) -> str:
+        return self.__id
 
     @property
     def price(self) -> int:
@@ -56,11 +62,11 @@ class ShopItem:
 
     @property
     def name(self) -> str:
-        return self.name
+        return self.__name
 
     @property
     def description(self) -> str:
-        return self.description
+        return self.__description
 
     def set_price(self, price: int) -> int:
         if price <= 0:

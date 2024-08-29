@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from bot.bot import Bot
+from bot.economy.shop import bot_shop
 
 
 class ShopCog(commands.Cog):
@@ -12,7 +13,13 @@ class ShopCog(commands.Cog):
 
     @shop.command(name="view", description="view the shop")
     async def view_shop(self, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message("not implemented")
+        embed = discord.Embed(title="Item Shop", colour=discord.Colour.from_rgb(141, 111, 100))
+        for item in bot_shop.items:
+            embed.add_field(
+                name=f"{item.emoji} {item.name}",
+                value=f"**Price:** {item.price} 🪙\n*{item.description}*",
+            )
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: Bot) -> None:

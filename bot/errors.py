@@ -11,3 +11,7 @@ class JobDoesNotExistError(AppCommandError):
 
 class TooMuchExperienceError(AppCommandError):
     """Raised when the trying to add too much experience to a user that would make them cross the level cap."""
+
+
+class PetNameTooShortError(AppCommandError):
+    """Raised when the pet name is too short."""
