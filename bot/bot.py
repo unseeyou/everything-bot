@@ -41,7 +41,7 @@ class Bot(commands.Bot):
             allowed_contexts=discord.app_commands.AppCommandContext(guild=True, dm_channel=False),
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name="my DMS for modmail",
+                name="you all the time",
             ),
         )
 

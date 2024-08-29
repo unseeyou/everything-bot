@@ -62,11 +62,11 @@ class ShopItem:
 
     @property
     def name(self) -> str:
-        return self.name
+        return self.__name
 
     @property
     def description(self) -> str:
-        return self.description
+        return self.__description
 
     def set_price(self, price: int) -> int:
         if price <= 0:
