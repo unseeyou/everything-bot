@@ -16,7 +16,7 @@ class ShopCog(commands.Cog):
         embed = discord.Embed(title="Item Shop", colour=discord.Colour.from_rgb(141, 111, 100))
         for item in bot_shop.items:
             embed.add_field(
-                name=f"{item.name} {item.emoji}",
+                name=f"{item.emoji} {item.name}",
                 value=f"**Price:** {item.price} 🪙\n*{item.description}*",
             )
         await interaction.response.send_message(embed=embed)
