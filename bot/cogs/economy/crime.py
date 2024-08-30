@@ -78,7 +78,7 @@ class Crime(commands.Cog):
         await interaction.response.send_message(
             embed=discord.Embed(
                 description=f"You stole {steal_amount/100:.2f} :coin: from {member.mention}! "
-                f"They now only have {target.wallet_balance/100:.2f} :coin: left in their wallet.",
+                f"They now have {target.wallet_balance/100:.2f} :coin: left in their wallet.",
                 colour=discord.Colour.dark_orange(),
             ),
         )
@@ -145,7 +145,7 @@ class Crime(commands.Cog):
         await interaction.response.send_message(
             embed=discord.Embed(
                 description=f"You stole {steal_amount/100:.2f} :coin: from {member.mention}! "
-                f"They now only have {target.wallet_balance/100:.2f} :coin: left in their bank.",
+                f"They now have {target.wallet_balance/100:.2f} :coin: left in their bank.",
                 colour=discord.Colour.dark_orange(),
             ),
         )
