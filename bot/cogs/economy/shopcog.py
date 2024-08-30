@@ -87,6 +87,7 @@ class InventoryCog(commands.Cog):
             embed.add_field(
                 name=f"{item.emoji} {item.name} {f"(x{counts[item.name]})" if counts[item.name] > 1 else ''}",
                 value=f"*{item.description}*",
+                inline=False,
             )
 
         await interaction.response.send_message(embed=embed)

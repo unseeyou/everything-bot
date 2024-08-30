@@ -8,6 +8,7 @@ from rich.logging import RichHandler
 from bot import utils
 from bot.database.commands import SqliteRepository
 from bot.economy.shop import bot_shop
+from bot.errors import TooManyShopItemsError
 from bot.settings import Settings
 from bot.ui import PersistentRoleButton
 
@@ -48,6 +49,9 @@ class Bot(commands.Bot):
         self.settings = Settings()  # pyright: ignore[reportCallIssue]
 
         self.shop = bot_shop
+        # otherwise embeds will not display properly
+        if len(self.shop.items) > 25:  # noqa: PLR2004
+            raise TooManyShopItemsError
 
         self.invites = {}
 

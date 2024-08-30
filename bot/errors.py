@@ -15,3 +15,7 @@ class TooMuchExperienceError(AppCommandError):
 
 class PetNameTooShortError(AppCommandError):
     """Raised when the pet name is too short."""
+
+
+class TooManyShopItemsError(AppCommandError):
+    """Raised when the shop has too many items."""
