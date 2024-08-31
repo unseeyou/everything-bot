@@ -1,5 +1,12 @@
+
 from bot.economy.economy_objects import Shop
 from bot.economy.economy_objects import ShopItem as Item
+
+default_pet = {
+    "name": "Unnamed",
+    "happy": 50,
+    "hunger": 0,
+}
 
 # MAX 25 ITEMS
 bot_shop = Shop(
@@ -7,8 +14,8 @@ bot_shop = Shop(
     items=[
         Item(name="Pet food", price=5, description="Feed your pet some food if it is hungry.", emoji="🍴"),
         Item("Name Tag", 10, "Give your pet with a name with this name tag.", emoji="🏷️"),
-        Item("Dog", 60, description="Buy a dog to be your pet", emoji="🐶"),
-        Item("Cat", 60, description="Buy a cat to be your pet", emoji="🐈"),
+        Item("Dog", 60, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet),
+        Item("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", item_id="pet_cat", data=default_pet),
         Item("2X Income Potion", 100, "Make more money. (works 8 times)", "2x_pot", "🍸"),
         Item("10X Income Potion", 500, "Make all the money. (works 8 times)", item_id="10x_pot", emoji="🍷"),
         Item("Cookie", 5, "Yummy.", item_id="cookie", emoji="🍪"),

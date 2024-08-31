@@ -45,15 +45,16 @@ class Job:
 
 
 class ShopItem:
-    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "") -> None:  # noqa: PLR0913, RUF100
+    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "", data: dict = {}) -> None:  # noqa: PLR0913, RUF100
         self.__name = name
         self.__price = price
         self.__description = description
         self.__id = item_id
         self.emoji = emoji
+        self.data = data
 
     def __str__(self) -> str:
-        return f"('{self.name}', {self.price}, '{self.description}', '{self.item_id}', '{self.emoji}')"
+        return f"('{self.name}', {self.price}, '{self.description}', '{self.item_id}', '{self.emoji}', {self.data})"
 
     @property
     def item_id(self) -> str:
@@ -126,7 +127,7 @@ class Inventory:
         items = []
         for item in literal_eval(string):
             data = literal_eval(item)
-            items.append(ShopItem(data[0], data[1], data[2], data[3], data[4]))
+            items.append(ShopItem(data[0], data[1], data[2], data[3], data[4], data[5]))
         return cls(items)
 
     @property

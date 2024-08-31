@@ -84,6 +84,8 @@ class InventoryCog(commands.Cog):
                 counts[item.name] += 1
 
         for item in items:
+            if item.item_id.startswith("pet"):
+                continue
             embed.add_field(
                 name=f"{item.emoji} {item.name} {f"(x{counts[item.name]})" if counts[item.name] > 1 else ''}",
                 value=f"*{item.description}*",
