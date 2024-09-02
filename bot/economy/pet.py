@@ -25,7 +25,7 @@ class Pet:
         self.__happy += random.randint(1, 5)  # noqa: S311
 
     def feed(self, amount: int) -> None:
-        self.set_hunger(amount)
+        self.set_hunger(self.__hunger - amount)
 
     def set_hunger(self, amount: int) -> None:
         if amount < 0:
