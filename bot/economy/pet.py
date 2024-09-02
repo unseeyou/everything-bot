@@ -43,6 +43,7 @@ class Pet:
             self.__happy = happy
 
     def set_name(self, name: str) -> None:
+        name = "".join([letter for letter in name if letter.isalnum()])
         if len(name) > 1:
             self.__name = name
         else:
