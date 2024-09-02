@@ -28,11 +28,10 @@ class Pet:
         self.set_hunger(amount)
 
     def set_hunger(self, amount: int) -> None:
-        value = self.hunger - amount
-        if value < 0:
+        if amount < 0:
             self.__hunger = 0
         else:
-            self.__hunger = value
+            self.__hunger = amount
 
     def set_happy(self, happy: int) -> None:
         if happy > 100:  # noqa: PLR2004
