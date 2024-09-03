@@ -1,9 +1,8 @@
 from typing import Literal
 
 from bot.bot import Bot
-from bot.economy.economy_objects import EconomyUser, ShopItem
+from bot.economy.economy_objects import EconomyUser, Inventory, ShopItem
 from bot.errors import PetNameTooShortError
-from bot.inventory import Inventory
 
 default_pet = {
     "name": "Unnamed",
