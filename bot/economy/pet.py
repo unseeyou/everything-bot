@@ -1,13 +1,27 @@
-import random
+from typing import Literal
 
+from bot.bot import Bot
+from bot.economy.economy_objects import EconomyUser, ShopItem
 from bot.errors import PetNameTooShortError
+from bot.inventory import Inventory
+
+default_pet = {
+    "name": "Unnamed",
+    "happy": 50,
+    "hunger": 0,
+}
+dog = ShopItem("Dog", 60, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet)
+cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", item_id="pet_cat", data=default_pet)
 
 
 class Pet:
-    def __init__(self, name: str = "Unnamed") -> None:
+    def __init__(self, name: str, owner_id: int, bot: Bot, species: Literal["dog", "cat"]) -> None:
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
         self.__name = name
+        self._user_id = owner_id
+        self._bot = bot
+        self._type = species
 
     @property
     def happy(self) -> int:
@@ -21,29 +35,63 @@ class Pet:
     def name(self) -> str:
         return self.__name
 
-    def play(self) -> None:
-        self.__happy += random.randint(1, 5)  # noqa: S311
+    def to_dict(self) -> dict:
+        return {
+            "name": self.__name,
+            "happy": self.__happy,
+            "hunger": self.__hunger,
+        }
 
-    def feed(self, amount: int) -> None:
-        self.set_hunger(self.__hunger - amount)
+    async def update(self) -> None:
+        if self._type == "dog":
+            dog.data = self.to_dict()
+            await self._edit_inventory(dog, "edit")
+            dog.data = default_pet
+        elif self._type == "cat":
+            cat.data = self.to_dict()
+            await self._edit_inventory(cat, "edit")
+            cat.data = default_pet
 
-    def set_hunger(self, amount: int) -> None:
+    async def _get_user(self) -> EconomyUser:
+        balance = await self.bot.database.economy.get_user_bank(self._user_id)
+        return EconomyUser(self._user_id, balance[0], balance[1], Inventory.from_string(balance[2]), self._bot)
+
+    async def _edit_inventory(self, item: ShopItem, mode: Literal["edit", "remove"]) -> None:
+        user = await self._get_user()
+        if mode == "remove":
+            await user.inventory_remove_item(item)
+        elif mode == "edit":
+            for i in user.inventory.items:
+                if not i.data:
+                    continue
+                if i.data["name"] == item.data["name"]:
+                    await user.inventory_remove_item(i)
+                    await user.inventory_add_item(item)
+                    break
+
+    async def feed(self, amount: int) -> None:
+        await self.set_hunger(self.__hunger - amount)
+
+    async def set_hunger(self, amount: int) -> None:
         if amount < 0:
             self.__hunger = 0
         else:
             self.__hunger = amount
+        await self.update()
 
-    def set_happy(self, happy: int) -> None:
+    async def set_happy(self, happy: int) -> None:
         if happy > 100:  # noqa: PLR2004
             self.__happy = 100
         elif happy < 0:
             self.__happy = 0
         else:
             self.__happy = happy
+        await self.update()
 
-    def set_name(self, name: str) -> None:
+    async def set_name(self, name: str) -> None:
         name = "".join([letter for letter in name if letter.isalnum()])
         if len(name) > 1:
             self.__name = name
         else:
             raise PetNameTooShortError
+        await self.update()
