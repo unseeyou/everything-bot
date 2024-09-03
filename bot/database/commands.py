@@ -403,7 +403,10 @@ class PetRepository:
                 "SELECT pet_name FROM pets WHERE user_id = ?",
                 (user_id,),
             )
-            return (await cursor.fetchone())[0]
+            result = await cursor.fetchone()
+            if result is None:
+                return "None"
+            return result[0]
 
 
 @dataclass

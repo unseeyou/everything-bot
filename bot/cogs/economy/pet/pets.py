@@ -111,6 +111,8 @@ class PetCommands(commands.Cog):
     @pets.command(name="feed", description="feed your pet")
     async def feed_pet(self, interaction: discord.Interaction) -> None:
         pet = await self.get_pet(interaction)
+        if pet is None:
+            return
         if pet.hunger < 1:
             await interaction.response.send_message(embed=PetEmbed("Your pet is already full!", pet))
             return
@@ -128,6 +130,8 @@ class PetCommands(commands.Cog):
     @pets.command(name="play", description="play with your pet")
     async def play_pet(self, interaction: discord.Interaction) -> None:
         pet = await self.get_pet(interaction)
+        if pet is None:
+            return
         if pet.hunger > PLAY_HUNGER_LIMIT:
             await interaction.response.send_message(f"{pet.name} is too hungry to play.")
             return
@@ -145,6 +149,8 @@ class PetCommands(commands.Cog):
     @pets.command(name="view", description="view your pet")
     async def view_pet(self, interaction: discord.Interaction) -> None:
         pet = await self.get_pet(interaction)
+        if pet is None:
+            return
         embed = discord.Embed(
             title=f"{interaction.user.name}'s Pet",
             colour=discord.Colour.from_rgb(141, 111, 100),
