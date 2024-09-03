@@ -166,7 +166,7 @@ class TwitchStuff(commands.Cog):
     @live_notifs_loop.before_loop
     async def before_live_notifs(self) -> None:
         logging.info("initiating twitch notifs...")
-        while self.bot.is_ready() is False:
+        while not self.bot.is_ready():  # noqa: ASYNC110
             await asyncio.sleep(1)
         logging.info("twitch notifs initiated")
 

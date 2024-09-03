@@ -45,7 +45,17 @@ class Job:
 
 
 class ShopItem:
-    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "", data: dict = {}) -> None:  # noqa: PLR0913, RUF100
+    def __init__(  # noqa: PLR0913
+        self,
+        name: str,
+        price: int,
+        description: str,
+        item_id: str = "",
+        emoji: str = "",
+        data: dict | None = None,
+    ) -> None:  # noqa: PLR0913, RUF100
+        if data is None:
+            data = {}
         self.__name = name
         self.__price = price
         self.__description = description

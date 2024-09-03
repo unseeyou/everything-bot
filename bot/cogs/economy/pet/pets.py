@@ -97,8 +97,12 @@ class PetCommands(commands.Cog):
         for item in user.inventory.items:
             if item.item_id.startswith("pet") and item.data["name"] == old:
                 item.data["name"] = name
-                await interaction.response.send_message(embed=PetEmbed(f"Your pet's name has been set to {name}!",
-                    self.create_pet(item, interaction.user.id)))
+                await interaction.response.send_message(
+                    embed=PetEmbed(
+                        f"Your pet's name has been set to {name}!",
+                        self.create_pet(item, interaction.user.id),
+                    ),
+                )
                 return
         await interaction.response.send_message(
             embed=PetEmbed("❌ You don't have a pet! Buy one from the shop.", None),
@@ -127,13 +131,16 @@ class PetCommands(commands.Cog):
         if pet.hunger > PLAY_HUNGER_LIMIT:
             await interaction.response.send_message(f"{pet.name} is too hungry to play.")
             return
-        gained_joy = randint(0, 100-pet.happy)  # noqa: S311
+        gained_joy = randint(0, 100 - pet.happy)  # noqa: S311
         hunger_consumed = randint(0, min(PLAY_HUNGER_LIMIT, pet.hunger))  # noqa: S311
         await pet.set_happy(pet.happy + gained_joy)
         await pet.set_hunger(pet.hunger - hunger_consumed)
         await interaction.response.send_message(
-            embed=PetEmbed(f"You played with your pet and it gained {gained_joy}% happiness!"
-                                                "\nIt is now {pet.happy}% happy!", pet))
+            embed=PetEmbed(
+                f"You played with your pet and it gained {gained_joy}% happiness!\nIt is now {pet.happy}% happy!",
+                pet,
+            ),
+        )
 
     @pets.command(name="view", description="view your pet")
     async def view_pet(self, interaction: discord.Interaction) -> None:
