@@ -385,6 +385,27 @@ class TicketsRepository:
             )
 
 
+class PetRepository:
+    def __init__(self, database: aiosqlite.Connection) -> None:
+        self.database = database
+
+    async def set_current_pet(self, user_id: int, pet_name: str) -> None:
+        async with self.database.cursor() as cursor:
+            await cursor.execute(
+                "INSERT OR REPLACE INTO pets (user_id, pet_name) VALUES (?, ?)",
+                (user_id, pet_name),
+            )
+        await self.database.commit()
+
+    async def get_current_pet(self, user_id: int) -> str:
+        async with self.database.cursor() as cursor:
+            await cursor.execute(
+                "SELECT pet_name FROM pets WHERE user_id = ?",
+                (user_id,),
+            )
+            return (await cursor.fetchone())[0]
+
+
 @dataclass
 class SqliteRepository:
     """A repository that uses SQLite to store data."""
@@ -397,6 +418,7 @@ class SqliteRepository:
     levels: LevelsRepository = None
     economy: EconomyRepository = None
     staff: StaffRepository = None
+    pets: PetRepository = None
 
     async def initialize(self) -> None:
         self.infractions = InfractionsRepository(self.database)
@@ -406,6 +428,7 @@ class SqliteRepository:
         self.levels = LevelsRepository(self.database)
         self.economy = EconomyRepository(self.database)
         self.staff = StaffRepository(self.database)
+        self.pets = PetRepository(self.database)
 
         async with self.database.cursor() as cursor:
             await cursor.execute(
@@ -515,6 +538,15 @@ class SqliteRepository:
                 CREATE TABLE IF NOT EXISTS effects (
                     user_id INTEGER PRIMARY KEY,
                     effects STRING DEFAULT '{}'
+                )
+                """,
+            )
+
+            await cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS pets (
+                    user_id INTEGER PRIMARY KEY,
+                    pet_name TEXT NOT NULL DEFAULT 'None'
                 )
                 """,
             )
