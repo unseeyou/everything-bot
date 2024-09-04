@@ -27,10 +27,10 @@ class PetCommands(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    def create_pet(self, item: ShopItem, user_id: int) -> Pet:
+    async def create_pet(self, item: ShopItem, user_id: int) -> Pet:
         pet = Pet(item.data["name"], user_id, self.bot, "dog" if item.item_id == "pet_dog" else "cat")
-        pet.set_hunger(item.data["hunger"])
-        pet.set_happy(item.data["happy"])
+        await pet.set_hunger(item.data["hunger"])
+        await pet.set_happy(item.data["happy"])
         return pet
 
     async def get_user(self, user_id: int) -> EconomyUser:
@@ -45,7 +45,7 @@ class PetCommands(commands.Cog):
         user = await self.get_user(interaction.user.id)
         for item in user.inventory.items:
             if item.item_id.startswith("pet") and item.data["name"] == pet:
-                return self.create_pet(item, interaction.user.id)
+                return await self.create_pet(item, interaction.user.id)
         await interaction.response.send_message("You don't have a pet! Buy one from the shop.")
         return None
 
@@ -57,7 +57,7 @@ class PetCommands(commands.Cog):
         pets = []
         for item in user.inventory.items:
             if item.item_id.startswith("pet"):
-                pet = self.create_pet(item, interaction.user.id)
+                pet = await self.create_pet(item, interaction.user.id)
                 pets.append(pet)
 
         embed = discord.Embed(
@@ -66,7 +66,7 @@ class PetCommands(commands.Cog):
         )
         for pet in pets:
             embed.add_field(
-                name=f"{pet.emoji} {pet.name}",
+                name=f"{'🐕' if pet.type == 'dog' else '🐈'} {pet.name}",
                 value=f"**Hunger Level:** {pet.hunger}\n**Happiness:** {pet.happy}%",
                 inline=False,
             )
@@ -77,6 +77,19 @@ class PetCommands(commands.Cog):
     async def select_pet(self, interaction: discord.Interaction, pet: str) -> None:
         await self.bot.database.pets.set_current_pet(interaction.user.id, pet)
         await interaction.response.send_message(f"Your current pet has been set to {pet}!", ephemeral=True)
+
+    @select_pet.autocomplete("pet")
+    async def select_pet_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice]:
+        user = await self.get_user(interaction.user.id)
+        return [
+            app_commands.Choice(name=f"{item.emoji} {item.data['name']}", value=item.data["name"])
+            for item in user.inventory.items
+            if item.item_id.startswith("pet") and item.data["name"].startswith(current)
+        ]
 
     @pets.command(name="name", description="change your pet's name")
     async def change_pet_name(self, interaction: discord.Interaction, name: str) -> None:
@@ -96,16 +109,18 @@ class PetCommands(commands.Cog):
         await user.inventory_remove_item(name_tag)
         for item in user.inventory.items:
             if item.item_id.startswith("pet") and item.data["name"] == old:
-                item.data["name"] = name
+                pet = await self.create_pet(item, interaction.user.id)
+                await pet.set_name(name)
                 await interaction.response.send_message(
                     embed=PetEmbed(
                         f"Your pet's name has been set to {name}!",
-                        self.create_pet(item, interaction.user.id),
+                        None,
                     ),
                 )
                 return
+
         await interaction.response.send_message(
-            embed=PetEmbed("❌ You don't have a pet! Buy one from the shop.", None),
+            embed=PetEmbed("You don't have a pet! Buy one from the shop.", None),
         )
 
     @pets.command(name="feed", description="feed your pet")

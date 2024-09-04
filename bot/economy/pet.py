@@ -9,6 +9,7 @@ default_pet = {
     "happy": 50,
     "hunger": 0,
 }
+
 dog = ShopItem("Dog", 60, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet)
 cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", item_id="pet_cat", data=default_pet)
 
@@ -52,7 +53,7 @@ class Pet:
             cat.data = default_pet
 
     async def _get_user(self) -> EconomyUser:
-        balance = await self.bot.database.economy.get_user_bank(self._user_id)
+        balance = await self._bot.database.economy.get_user_bank(self._user_id)
         return EconomyUser(self._user_id, balance[0], balance[1], Inventory.from_string(balance[2]), self._bot)
 
     async def _edit_inventory(self, item: ShopItem, mode: Literal["edit", "remove"]) -> None:
@@ -63,7 +64,8 @@ class Pet:
             for i in user.inventory.items:
                 if not i.data:
                     continue
-                if i.data["name"] == item.data["name"]:
+                if i.data["name"] == item.data["name"] or ...:  # TODO: different update when pet name changes
+                    # prob add an ID to check instead
                     await user.inventory_remove_item(i)
                     await user.inventory_add_item(item)
                     break
@@ -94,3 +96,7 @@ class Pet:
         else:
             raise PetNameTooShortError
         await self.update()
+
+    @property
+    def type(self) -> str:
+        return self._type
