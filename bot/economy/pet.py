@@ -8,6 +8,7 @@ default_pet = {
     "name": "Unnamed",
     "happy": 50,
     "hunger": 0,
+    "id": "unset",
 }
 
 dog = ShopItem("Dog", 60, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet)
