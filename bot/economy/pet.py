@@ -101,9 +101,9 @@ class Pet:
         await self.update()
 
     async def set_name(self, name: str) -> None:
-        name = "".join([letter for letter in name if letter.isalnum()])
-        if len(name) > 1:
-            self.__name = name
+        name_filtered = "".join([letter for letter in name if letter.isalnum()])
+        if len(name_filtered) > 1:
+            self.__name = "".join([i for i in name if i.isalnum() or i == " "])
         else:
             raise PetNameTooShortError
         await self.update()
