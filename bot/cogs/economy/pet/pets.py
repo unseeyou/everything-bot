@@ -153,7 +153,7 @@ class PetCommands(commands.Cog):
         gained_joy = randint(0, 100 - pet.happy)  # noqa: S311
         hunger_consumed = randint(1, 3)  # noqa: S311
         await pet.set_happy(pet.happy + gained_joy)
-        await pet.set_hunger(pet.hunger - hunger_consumed)
+        await pet.set_hunger(pet.hunger + hunger_consumed)
         await interaction.response.send_message(
             embed=PetEmbed(
                 f"You played with your pet and it gained {gained_joy}% happiness!\nIt is now {pet.happy}% happy!",
