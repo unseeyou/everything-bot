@@ -244,7 +244,7 @@ class EconomyUser:
     async def multiply_earnings(self, amount: float) -> tuple[float, float]:
         multi = 1
         for item in self.inventory.items:
-            if "potion" in item.item_id or "cookie" in item.item_id:
+            if "multiplier" in item.data:
                 amount *= item.data["multiplier"]
                 multi *= item.data["multiplier"]
                 item.data["duration"] -= 1
