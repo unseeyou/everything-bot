@@ -76,7 +76,8 @@ class PetCommands(commands.Cog):
     @pets.command(name="set", description="select a pet to interact with")
     async def select_pet(self, interaction: discord.Interaction, pet: str) -> None:
         await self.bot.database.pets.set_current_pet(interaction.user.id, pet)
-        await interaction.response.send_message(f"Your current pet has been set to {pet}!", ephemeral=True)
+        pet = await self.get_pet(interaction)
+        await interaction.response.send_message(f"Your current pet has been set to {pet.name}!", ephemeral=True)
 
     @select_pet.autocomplete("pet")
     async def select_pet_autocomplete(
