@@ -1,6 +1,7 @@
 from bot.economy.economy_objects import Shop
 from bot.economy.economy_objects import ShopItem as Item
 from bot.economy.pet import cat, dog
+from bot.errors import TooManyShopItemsError
 
 pet_food = Item(name="Pet food", price=5, description="Feed your pet some food if it is hungry.", emoji="🍴")
 name_tag = Item("Name Tag", 10, "Give your pet with a name with this name tag.", emoji="🏷️")
@@ -28,3 +29,6 @@ effects = {
     "10x_pot": {"multiplier": 10, "duration": 8},
     "cookie": {"multiplier": 1.2, "duration": 2},
 }
+
+if len(bot_shop.items) > 25:  # noqa: PLR2004
+    raise TooManyShopItemsError
