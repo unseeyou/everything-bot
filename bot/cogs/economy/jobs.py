@@ -90,7 +90,7 @@ class JobCommands(commands.Cog):
             colour=discord.Colour.og_blurple(),
             title=f"You earned {job.salary:.2f} :coin: for working as a {job.name.lower()}!",
         ).set_footer(text="You can work a shift again in 15 minutes")
-        user.unhappy_pets()
+        await user.unhappy_pets()
         await interaction.response.send_message(embed=embed)
 
     @jobs.command(name="current", description="Shows you your current job")
