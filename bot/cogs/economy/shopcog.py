@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from bot.bot import Bot
 from bot.economy.economy_objects import EconomyUser, Inventory
+from bot.economy.pet import generate_pet_id
 from bot.economy.shop import bot_shop
 
 
@@ -42,6 +43,8 @@ class ShopCog(commands.Cog):
             f"You bought {item.emoji} {item.name} for {item.price} 🪙",
             silent=True,
         )
+        if item.item_id.startswith("pet"):
+            item.data["id"] = generate_pet_id()
         user.inventory.add_item(item)
         await user.edit_wallet(-item.price * 100)
 

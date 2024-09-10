@@ -1,3 +1,4 @@
+from random import sample
 from typing import Literal
 
 from bot.bot import Bot
@@ -16,13 +17,16 @@ cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", 
 
 
 class Pet:
-    def __init__(self, name: str, owner_id: int, bot: Bot, species: Literal["dog", "cat"]) -> None:
+    def __init__(
+        self, name: str, owner_id: int, bot: Bot, species: Literal["dog", "cat"], pet_id: str = "unset",
+    ) -> None:
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
         self.__name = name
         self._user_id = owner_id
         self._bot = bot
         self._type = species
+        self.__id = pet_id if pet_id != "unset" else generate_pet_id()
 
     @property
     def happy(self) -> int:
@@ -41,6 +45,7 @@ class Pet:
             "name": self.__name,
             "happy": self.__happy,
             "hunger": self.__hunger,
+            "id": self.__id,
         }
 
     async def update(self) -> None:
@@ -65,7 +70,7 @@ class Pet:
             for i in user.inventory.items:
                 if not i.data:
                     continue
-                if i.data["name"] == item.data["name"] or ...:  # TODO: different update when pet name changes
+                if i.data["id"] == item.data["id"]:
                     # prob add an ID to check instead
                     await user.inventory_remove_item(i)
                     await user.inventory_add_item(item)
@@ -101,3 +106,8 @@ class Pet:
     @property
     def type(self) -> str:
         return self._type
+
+
+def generate_pet_id() -> str:
+    chars = "ABCDEFGHJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz"
+    return "".join(sample(chars, 10))

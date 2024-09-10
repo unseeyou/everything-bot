@@ -28,7 +28,7 @@ class PetCommands(commands.Cog):
         self.bot = bot
 
     async def create_pet(self, item: ShopItem, user_id: int) -> Pet:
-        pet = Pet(item.data["name"], user_id, self.bot, "dog" if item.item_id == "pet_dog" else "cat")
+        pet = Pet(item.data["name"], user_id, self.bot, "dog" if item.item_id == "pet_dog" else "cat", item.data["id"])
         await pet.set_hunger(item.data["hunger"])
         await pet.set_happy(item.data["happy"])
         return pet
@@ -86,7 +86,7 @@ class PetCommands(commands.Cog):
     ) -> list[app_commands.Choice]:
         user = await self.get_user(interaction.user.id)
         return [
-            app_commands.Choice(name=f"{item.emoji} {item.data['name']}", value=item.data["name"])
+            app_commands.Choice(name=f"{item.emoji} {item.data['name']}", value=item.data["id"])
             for item in user.inventory.items
             if item.item_id.startswith("pet") and item.data["name"].startswith(current)
         ]
@@ -99,7 +99,6 @@ class PetCommands(commands.Cog):
                 embed=PetEmbed("You don't have a pet selected currently! `/pets set` one.", None),
             )
             return
-        await self.bot.database.pets.set_current_pet(interaction.user.id, name)
         user = await self.get_user(interaction.user.id)
         if len([i for i in user.inventory.items if i.name == "Name Tag"]) == 0:
             await interaction.response.send_message(
@@ -108,7 +107,7 @@ class PetCommands(commands.Cog):
             return
         await user.inventory_remove_item(name_tag)
         for item in user.inventory.items:
-            if item.item_id.startswith("pet") and item.data["name"] == old:
+            if item.item_id.startswith("pet") and item.data["id"] == old:
                 pet = await self.create_pet(item, interaction.user.id)
                 await pet.set_name(name)
                 await interaction.response.send_message(
