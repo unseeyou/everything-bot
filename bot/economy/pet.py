@@ -1,4 +1,4 @@
-from random import sample
+import uuid
 from typing import Literal
 
 from bot.bot import Bot
@@ -114,5 +114,4 @@ class Pet:
 
 
 def generate_pet_id() -> str:
-    chars = "ABCDEFGHJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz"
-    return "".join(sample(chars, 10))
+    return str(uuid.uuid4())
