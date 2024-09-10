@@ -95,6 +95,12 @@ class InventoryCog(commands.Cog):
                 inline=False,
             )
 
+        if len(items) == 0:
+            embed.add_field(
+                name="Huh? There's nothing here!",
+                value=r"\*Cricket Noises\* You don't have any items in your inventory!",
+            )
+
         await interaction.response.send_message(embed=embed)
 
 
