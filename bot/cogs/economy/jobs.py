@@ -85,8 +85,9 @@ class JobCommands(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
             return
-        # amount earned = job.salary
-        await user.edit_wallet(int(job.salary * 100))
+        amount_earned = job.salary
+        amount_earned, multiplier = await user.multiply_earnings(amount_earned)
+        await user.edit_wallet(int(amount_earned * 100))
         embed = discord.Embed(
             colour=discord.Colour.og_blurple(),
             title=f"You earned {job.salary:.2f} :coin: for working as a {job.name.lower()}!",

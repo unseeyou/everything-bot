@@ -241,9 +241,14 @@ class EconomyUser:
                 item.data["happy"] = max(item.data["happy"], 0)
         await self.__update()
 
-    async def multiply_earnings(self, amount: int) -> int:
+    async def multiply_earnings(self, amount: float) -> tuple[float, float]:
+        multi = 1
         for item in self.inventory.items:
             if "potion" in item.item_id or "cookie" in item.item_id:
                 amount *= item.data["multiplier"]
+                multi *= item.data["multiplier"]
+                item.data["duration"] -= 1
+                if item.data["duration"] <= 0:
+                    self.inventory.remove_item(item)
         await self.__update()
-        return int(amount)
+        return amount, multi
