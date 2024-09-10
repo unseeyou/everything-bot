@@ -44,7 +44,7 @@ class PetCommands(commands.Cog):
             return None
         user = await self.get_user(interaction.user.id)
         for item in user.inventory.items:
-            if item.item_id.startswith("pet") and item.data["name"] == pet:
+            if item.item_id.startswith("pet") and item.data["id"] == pet:
                 return await self.create_pet(item, interaction.user.id)
         await interaction.response.send_message("You don't have a pet! Buy one from the shop.")
         return None
