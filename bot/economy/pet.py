@@ -18,7 +18,12 @@ cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", 
 
 class Pet:
     def __init__(
-        self, name: str, owner_id: int, bot: Bot, species: Literal["dog", "cat"], pet_id: str = "unset",
+        self,
+        name: str,
+        owner_id: int,
+        bot: Bot,
+        species: Literal["dog", "cat"],
+        pet_id: str = "unset",
     ) -> None:
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
