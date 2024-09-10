@@ -150,6 +150,8 @@ class Inventory:
     def remove_item(self, item: ShopItem) -> None:
         if item.item_id.startswith("pet"):
             for i in self.__items:
+                if i.data == {}:
+                    continue
                 if i.data["id"] == item.data["id"]:
                     self.__items.remove(i)
                     break
