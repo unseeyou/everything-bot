@@ -1,3 +1,5 @@
+import random
+
 from ast import literal_eval
 from contextlib import suppress
 
@@ -231,3 +233,10 @@ class EconomyUser:
         self.__inventory.remove_item(item)
         await self.__update()
         return self.inventory
+
+    def unhappy_pets(self) -> None:
+        """Call this in the work command so pets slowly lose happiness when the user is working"""
+        for item in self.inventory.items:
+            if item.item_id.startswith("pet"):
+                item.data["happy"] -= random.randint(5, 15)  # noqa: S311
+                item.data["happy"] = max(item.data["happy"], 0)

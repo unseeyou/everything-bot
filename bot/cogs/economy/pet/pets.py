@@ -132,7 +132,7 @@ class PetCommands(commands.Cog):
             await interaction.response.send_message(embed=PetEmbed("Your pet is already full!", pet))
             return
         user = await self.get_user(interaction.user.id)
-        if len([i for i in user.inventory.items if i.name == "Pet Food"]) == 0:
+        if len([i for i in user.inventory.items if i.name == "Pet food"]) == 0:
             await interaction.response.send_message(
                 embed=PetEmbed("You don't have any pet food! Buy one from the shop.", pet),
             )
