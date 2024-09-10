@@ -1,5 +1,6 @@
-import contextlib
+import random
 from ast import literal_eval
+from contextlib import suppress
 
 from discord.ext.commands import Bot
 
@@ -45,15 +46,26 @@ class Job:
 
 
 class ShopItem:
-    def __init__(self, name: str, price: int, description: str, item_id: str = "", emoji: str = "") -> None:  # noqa: PLR0913, RUF100
+    def __init__(  # noqa: PLR0913
+        self,
+        name: str,
+        price: int,
+        description: str,
+        item_id: str = "",
+        emoji: str = "",
+        data: dict | None = None,
+    ) -> None:  # noqa: PLR0913, RUF100
+        if data is None:
+            data = {}
         self.__name = name
         self.__price = price
         self.__description = description
         self.__id = item_id
         self.emoji = emoji
+        self.data = data
 
     def __str__(self) -> str:
-        return f"('{self.name}', {self.price}, '{self.description}', '{self.item_id}', '{self.emoji}')"
+        return f"('{self.name}', {self.price}, '{self.description}', '{self.item_id}', '{self.emoji}', {self.data})"
 
     @property
     def item_id(self) -> str:
@@ -110,7 +122,7 @@ class Shop:
         self.__items.append(item)
 
     def remove_item(self, item: ShopItem) -> None:
-        with contextlib.suppress(ValueError):
+        with suppress(ValueError):
             self.__items.remove(item)
 
 
@@ -126,7 +138,7 @@ class Inventory:
         items = []
         for item in literal_eval(string):
             data = literal_eval(item)
-            items.append(ShopItem(data[0], data[1], data[2], data[3], data[4]))
+            items.append(ShopItem(data[0], data[1], data[2], data[3], data[4], data[5]))
         return cls(items)
 
     @property
@@ -137,8 +149,18 @@ class Inventory:
         self.__items.append(item)
 
     def remove_item(self, item: ShopItem) -> None:
-        with contextlib.suppress(ValueError):
-            self.__items.remove(item)
+        if item.item_id.startswith("pet"):
+            for i in self.__items:
+                if i.data == {}:
+                    continue
+                if i.data["id"] == item.data["id"]:
+                    self.__items.remove(i)
+                    break
+            return
+        for i in self.__items:
+            if i.name == item.name:
+                self.__items.remove(i)
+                break
 
 
 class EconomyUser:
@@ -210,3 +232,18 @@ class EconomyUser:
         self.__inventory.remove_item(item)
         await self.__update()
         return self.inventory
+
+    async def unhappy_pets(self) -> None:
+        """Call this in the work command so pets slowly lose happiness when the user is working"""
+        for item in self.inventory.items:
+            if item.item_id.startswith("pet"):
+                item.data["happy"] -= random.randint(5, 15)  # noqa: S311
+                item.data["happy"] = max(item.data["happy"], 0)
+        await self.__update()
+
+    async def multiply_earnings(self, amount: int) -> int:
+        for item in self.inventory.items:
+            if "potion" in item.item_id or "cookie" in item.item_id:
+                amount *= item.data["multiplier"]
+        await self.__update()
+        return int(amount)

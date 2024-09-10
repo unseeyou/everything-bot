@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from bot.bot import Bot
 from bot.economy.economy_objects import EconomyUser, Inventory
+from bot.economy.pet import generate_pet_id
 from bot.economy.shop import bot_shop
 
 
@@ -42,6 +43,8 @@ class ShopCog(commands.Cog):
             f"You bought {item.emoji} {item.name} for {item.price} 🪙",
             silent=True,
         )
+        if item.item_id.startswith("pet"):
+            item.data["id"] = generate_pet_id()
         user.inventory.add_item(item)
         await user.edit_wallet(-item.price * 100)
 
@@ -84,9 +87,18 @@ class InventoryCog(commands.Cog):
                 counts[item.name] += 1
 
         for item in items:
+            if item.item_id.startswith("pet"):
+                continue
             embed.add_field(
                 name=f"{item.emoji} {item.name} {f"(x{counts[item.name]})" if counts[item.name] > 1 else ''}",
                 value=f"*{item.description}*",
+                inline=False,
+            )
+
+        if len(items) == 0:
+            embed.add_field(
+                name="Huh? There's nothing here!",
+                value=r"\*Cricket Noises\* You don't have any items in your inventory!",
             )
 
         await interaction.response.send_message(embed=embed)

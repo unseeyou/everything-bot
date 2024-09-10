@@ -7,7 +7,6 @@ from rich.logging import RichHandler
 
 from bot import utils
 from bot.database.commands import SqliteRepository
-from bot.economy.shop import bot_shop
 from bot.settings import Settings
 from bot.ui import PersistentRoleButton
 
@@ -46,8 +45,6 @@ class Bot(commands.Bot):
         )
 
         self.settings = Settings()  # pyright: ignore[reportCallIssue]
-
-        self.shop = bot_shop
 
         self.invites = {}
 

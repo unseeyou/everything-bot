@@ -13,7 +13,7 @@ from discord.app_commands.errors import (
 from discord.ext.commands import Cog
 
 from bot.bot import Bot
-from bot.errors import DatabaseNotConnectedError, JobDoesNotExistError
+from bot.errors import DatabaseNotConnectedError, JobDoesNotExistError, PetNameTooShortError
 
 
 class ErrorEmbed(Embed):
@@ -89,6 +89,10 @@ class ErrorHandler(Cog):
                 "This job doesn't exist. Do `/jobs list` to see all available jobs, or pick one from the "
                 "autocomplete.",
             )
+
+        if isinstance(error, PetNameTooShortError):
+            embed.internal = False
+            embed.set_error("Your pet's name must be at least 1 character long.\n(*Letters and numbers only*)")
 
     async def on_tree_error(
         self,
