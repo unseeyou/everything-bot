@@ -90,7 +90,8 @@ class JobCommands(commands.Cog):
         await user.edit_wallet(int(amount_earned * 100))
         embed = discord.Embed(
             colour=discord.Colour.og_blurple(),
-            title=f"You earned {job.salary:.2f} :coin: for working as a {job.name.lower()}!",
+            title=f"You earned {amount_earned:.2f} ({job.salary} * {multiplier}) :coin: "
+                  f"for working as a {job.name.lower()}!",
         ).set_footer(text="You can work a shift again in 15 minutes")
         await user.unhappy_pets()
         await interaction.response.send_message(embed=embed)
