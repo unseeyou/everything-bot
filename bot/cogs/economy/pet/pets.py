@@ -167,7 +167,7 @@ class PetCommands(commands.Cog):
         if pet is None:
             return
         embed = discord.Embed(
-            title=f"{interaction.user.name}'s Pet",
+            title=f"{"🐶" if pet.type == 'dog' else '🐱'} {interaction.user.name}'s Pet",
             colour=discord.Colour.from_rgb(141, 111, 100),
             description=f"**Name:** {pet.name}\n**Hunger:** {pet.hunger}\n**Happiness:** {pet.happy}%",
         )
