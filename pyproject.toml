@@ -17,7 +17,7 @@ dependencies = [
     "charset-normalizer>=3.3.2",
     "pillow>=10.4.0",
 ]
-description = "Default template for PDM package"
+description = "An all purpose discord bot with a lot of features"
 readme = "README.md"
 license = {text = "MIT"}
 
@@ -88,6 +88,7 @@ lint.ignore = [
     # Boolean trap.
     "FBT001",
     "FBT002",
+    "ASYNC110"
 ]
 
 lint.pydocstyle.convention = "google"
