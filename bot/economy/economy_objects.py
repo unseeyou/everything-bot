@@ -1,5 +1,5 @@
-import contextlib
 from ast import literal_eval
+from contextlib import suppress
 
 from discord.ext.commands import Bot
 
@@ -121,7 +121,7 @@ class Shop:
         self.__items.append(item)
 
     def remove_item(self, item: ShopItem) -> None:
-        with contextlib.suppress(ValueError):
+        with suppress(ValueError):
             self.__items.remove(item)
 
 
@@ -148,8 +148,10 @@ class Inventory:
         self.__items.append(item)
 
     def remove_item(self, item: ShopItem) -> None:
-        with contextlib.suppress(ValueError):
-            self.__items.remove(item)
+        for i in self.__items:
+            if i.name == item.name:
+                self.__items.remove(i)
+                break
 
 
 class EconomyUser:
