@@ -24,7 +24,7 @@ class Pet:
         bot: Bot,
         species: Literal["dog", "cat"],
         pet_id: str = "unset",
-    ) -> None: # noqa: PLR0913 RUF100
+    ) -> None:  # noqa: PLR0913 RUF100
         self.__happy = 50  # percentage
         self.__hunger = 0  # higher = more hungry
         self.__name = name
