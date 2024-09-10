@@ -169,7 +169,7 @@ class PetCommands(commands.Cog):
         embed = discord.Embed(
             title=f"{"🐶" if pet.type == 'dog' else '🐱'} {interaction.user.name}'s Pet",
             colour=discord.Colour.from_rgb(141, 111, 100),
-            description=f"🏷️ **Name:** {pet.name}\n🍕 **Hunger:** {pet.hunger}\n😁 **Happiness:** {pet.happy}%",
+            description=f"🏷️ **Name:** {pet.name}\n\n🍕 **Hunger:** {pet.hunger}\n\n😁 **Happiness:** {pet.happy}%",
         )
         await interaction.response.send_message(embed=embed)
 
