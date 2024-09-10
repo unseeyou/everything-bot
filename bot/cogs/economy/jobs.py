@@ -85,6 +85,7 @@ class JobCommands(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
             return
+        # amount earned = job.salary
         await user.edit_wallet(int(job.salary * 100))
         embed = discord.Embed(
             colour=discord.Colour.og_blurple(),

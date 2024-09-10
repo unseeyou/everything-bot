@@ -30,7 +30,7 @@ class Bank(commands.Cog):
 
     @update_bank.before_loop
     async def before_update_bank(self) -> None:
-        while not self.bot.is_ready():  # noqa: ASYNC110
+        while not self.bot.is_ready():
             await asyncio.sleep(1)
 
     bank = discord.app_commands.Group(name="bank", description="Bank related commands")

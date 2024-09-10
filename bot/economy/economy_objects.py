@@ -240,3 +240,10 @@ class EconomyUser:
                 item.data["happy"] -= random.randint(5, 15)  # noqa: S311
                 item.data["happy"] = max(item.data["happy"], 0)
         await self.__update()
+
+    async def multiply_earnings(self, amount: int) -> int:
+        for item in self.inventory.items:
+            if "potion" in item.item_id or "cookie" in item.item_id:
+                amount *= item.data["multiplier"]
+        await self.__update()
+        return int(amount)
