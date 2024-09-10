@@ -1,5 +1,4 @@
 import random
-
 from ast import literal_eval
 from contextlib import suppress
 
