@@ -91,7 +91,8 @@ class InventoryCog(commands.Cog):
                 continue
             embed.add_field(
                 name=f"{item.emoji} {item.name} {f"(x{counts[item.name]})" if counts[item.name] > 1 else ''}",
-                value=f"*{item.description}*",
+                value=f"*{item.description}*{f" ({item.data['duration']} use(s) left)"
+                if "duration" in item.data else ""}",
                 inline=False,
             )
 

@@ -17,7 +17,7 @@ cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", 
 
 
 class Pet:
-    def __init__(
+    def __init__(  # noqa: PLR0913 RUF100
         self,
         name: str,
         owner_id: int,
@@ -73,7 +73,7 @@ class Pet:
             await user.inventory_remove_item(item)
         elif mode == "edit":
             for i in user.inventory.items:
-                if not i.data:
+                if "id" not in i.data:
                     continue
                 if i.data["id"] == item.data["id"]:
                     # prob add an ID to check instead
