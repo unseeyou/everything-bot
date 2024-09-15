@@ -9,7 +9,11 @@ class Admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    admin = app_commands.Group(name="admin", description="Admin commands")
+    admin = app_commands.Group(
+        name="admin",
+        description="Admin commands",
+        default_permissions=discord.Permissions(permissions=1099511635984),
+    )
 
     @admin.command(name="warn", description="Warn a user")
     @app_commands.checks.has_permissions(moderate_members=True)
@@ -21,8 +25,8 @@ class Admin(commands.Cog):
         reason: str,
     ) -> None:
         await user.send(
-            f"You have been warned in {interaction.guild.name} for {reason}."
-            "Please create a ticket to appeal this action.",
+            f"You have been warned in `{interaction.guild.name}` for `{reason}`. "
+            "\n\n*Please create a ticket to appeal this action.*",
         )
         await interaction.response.send_message(
             f"Warned {user.mention} for {reason}",
