@@ -38,7 +38,7 @@ x10_income_pot = Item(
     emoji="🍷",
     data=effects["10x_pot"],
 )
-cookie = Item("Cookie", 5, "Yummy.", item_id="cookie", emoji="🍪", data=effects["cookie"])
+cookie = Item("Cookie", 25, "Yummy.", item_id="cookie", emoji="🍪", data=effects["cookie"])
 
 # MAX 25 ITEMS
 bot_shop = Shop(
