@@ -12,8 +12,8 @@ default_pet = {
     "id": "unset",
 }
 
-dog = ShopItem("Dog", 60, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet)
-cat = ShopItem("Cat", 60, description="Buy a cat to be your pet", emoji="🐈", item_id="pet_cat", data=default_pet)
+dog = ShopItem("Dog", 600, description="Buy a dog to be your pet", emoji="🐶", item_id="pet_dog", data=default_pet)
+cat = ShopItem("Cat", 600, description="Buy a cat to be your pet", emoji="🐈", item_id="pet_cat", data=default_pet)
 
 
 class Pet:

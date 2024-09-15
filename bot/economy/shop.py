@@ -12,19 +12,19 @@ effects = {
 
 pet_food = Item(
     name="Pet food",
-    price=5,
+    price=50,
     description="Feed your pet some food if it is hungry.",
     emoji="🍴",
 )
 name_tag = Item(
     "Name Tag",
-    10,
+    100,
     "Give your pet with a name with this name tag.",
     emoji="🏷️",
 )
 x2_income_pot = Item(
     "2X Income Potion",
-    100,
+    1000,
     "Make more money. (works 8 times)",
     "2x_pot",
     "🍸",
@@ -32,7 +32,7 @@ x2_income_pot = Item(
 )
 x10_income_pot = Item(
     "10X Income Potion",
-    500,
+    5000,
     "Make all the money. (works 8 times)",
     item_id="10x_pot",
     emoji="🍷",
