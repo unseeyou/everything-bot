@@ -19,7 +19,7 @@ class InfractionsRepository:
     async def add_infraction(self, guild_id: int, admin_id: int, user_id: int, description: str) -> None:
         async with self.database.cursor() as cursor:
             await cursor.execute(
-                "INSERT INTO infractions (guild_id, admin_id, user_id, description) VALUES (?, ?, ?, ?)",
+                "INSERT INTO infractions (guild, admin_id, user_id, description) VALUES (?, ?, ?, ?)",
                 (guild_id, admin_id, user_id, description),
             )
             await self.database.commit()
