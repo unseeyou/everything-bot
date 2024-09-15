@@ -9,7 +9,10 @@ class Admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    admin = app_commands.Group(name="admin", description="Admin commands")
+    admin = app_commands.Group(name="admin",
+                               description="Admin commands",
+                               default_permissions=discord.Permissions(permissions=1099511635984),
+                               )
 
     @admin.command(name="warn", description="Warn a user")
     @app_commands.checks.has_permissions(moderate_members=True)
