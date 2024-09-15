@@ -527,7 +527,7 @@ class SqliteRepository:
                 # description: description of the infraction such as reason and punishment
                 """
                 CREATE TABLE IF NOT EXISTS infractions (
-                    guild INTEGER PRIMARY KEY,
+                    guild INTEGER NOT NULL,
                     admin_id INTEGER NOT NULL,
                     user_id INTEGER NOT NULL,
                     description STRING DEFAULT 'None'

@@ -22,7 +22,7 @@ class Admin(commands.Cog):
     ) -> None:
         await user.send(
             f"You have been warned in `{interaction.guild.name}` for `{reason}`. "
-            "*Please create a ticket to appeal this action.*",
+            "\n\n*Please create a ticket to appeal this action.*",
         )
         await interaction.response.send_message(
             f"Warned {user.mention} for {reason}",
