@@ -1,1 +1,1 @@
-# Sinflex's Multi-Purpose Bot
+# Multi-Purpose Bot
