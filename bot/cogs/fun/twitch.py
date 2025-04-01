@@ -149,6 +149,8 @@ class TwitchStuff(commands.Cog):
                         embed = await create_embed(result=output)
                         for guild in json_file[streamer]:
                             server: discord.Guild = self.bot.get_guild(int(guild["serverID"]))
+                            if server is None:
+                                continue
                             channel = utils.get(server.text_channels, id=guild["ChannelID"])
                             await send_message(
                                 embed=embed,
