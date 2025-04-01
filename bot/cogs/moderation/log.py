@@ -453,7 +453,8 @@ class Log(commands.Cog):
     @log.command(name="query_channel", description="get the current log channel")
     async def query_channel(self, interaction: discord.Interaction) -> None:
         try:
-            channel = await self.bot.database.logs.get_log_channel(interaction.guild.id)
+            channel_id = await self.bot.database.logs.get_log_channel(interaction.guild.id)
+            channel = interaction.guild.get_channel(channel_id)
         except DatabaseIntegrityError:
             await interaction.response.send_message(
                 "No log channel set! Use `/modlog set_channel` to set a log channel.",

@@ -1,6 +1,6 @@
 from ast import literal_eval
 from dataclasses import dataclass
-from sqlite3 import IntegrityError
+from sqlite3 import DatabaseError
 
 import aiosqlite
 
@@ -166,7 +166,7 @@ class LevelsRepository:
                     {"user_id": user_id, "amount": amount},
                 )
                 await self.database.commit()
-            except IntegrityError:
+            except DatabaseError:
                 await cursor.execute(
                     f"UPDATE {db_table} SET xp = xp + :amount WHERE user_id = :user_id",  # noqa: S608
                     {"amount": amount, "user_id": user_id},
@@ -181,7 +181,7 @@ class LevelsRepository:
                     {"user_id": user_id, "amount": amount},
                 )
                 await self.database.commit()
-            except IntegrityError:
+            except DatabaseError:
                 await self.create_guild_levels(int("".join([i for i in db_table if i.isnumeric()])))
                 await cursor.execute(
                     f"UPDATE {db_table} SET xp = :amount WHERE user_id = :user_id",  # noqa: S608
@@ -205,7 +205,7 @@ class LevelsRepository:
                     {"user_id": user_id},
                 )
                 result = await cursor.fetchone()
-            except IntegrityError:
+            except DatabaseError:
                 await self.create_guild_levels(guild_id)
                 await cursor.execute(
                     f"SELECT xp FROM levels_{guild_id} WHERE user_id = :user_id",  # noqa: S608
@@ -572,5 +572,5 @@ class SqliteRepository:
             )
             result = await cursor.fetchone()
             if result is None:
-                raise DatabaseIntegrityError
+                raise DatabaseError
             return result[0]
