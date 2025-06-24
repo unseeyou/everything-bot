@@ -26,6 +26,18 @@ class LevelEmbed(Embed):
         self.add_field(name="XP to next level", value=str(await self.user.exp_required()), inline=False)
 
 
+class LevelUpEmbed(Embed):
+    def __init__(self, user: LevelUser, username: str) -> None:
+        username = username.replace("{", "").replace("}", "")  # prevent shenanigans
+        super().__init__(
+            color=discord.Color.from_rgb(153, 255, 255),
+            title=f"🎉 Congrats on the rankup, {username}! You are now level {user.level}.",
+        )
+        self.user = user
+        self.file = create_level_icon(user.level, user.user_id)
+        self.set_thumbnail(url=f"attachment://level_icon_{user.user_id}.png")
+
+
 class Levels(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
@@ -39,7 +51,10 @@ class Levels(commands.Cog):
         if message.author.bot:
             return
         user = await LevelUser.from_db(message.author.id, message.guild.id, self.bot)
+        lvl_old = user.level
         await user.add_xp(randint(15, 25))  # noqa: S311
+        if user.level > lvl_old:
+            await message.reply(embed=LevelUpEmbed(user=user, username=message.author.display_name))
 
     @levels.command(name="level", description="View your or someone else's level info")
     @app_commands.describe(member="The member to view the level info of")
