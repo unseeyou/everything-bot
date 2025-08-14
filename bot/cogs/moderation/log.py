@@ -89,7 +89,7 @@ class Log(commands.Cog):
             diff = set(role_before.permissions).symmetric_difference(set(role_after.permissions))
             permission = next(iter(diff))[0]
             permission = permission.replace("_", " ").title()
-            if next(iter(diff))[1]:
+            if not next(iter(diff))[1]:
                 in_title = "Removed"
                 in_des = "removed from"
             else:
