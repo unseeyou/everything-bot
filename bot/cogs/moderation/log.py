@@ -239,6 +239,10 @@ class Log(commands.Cog):
         embed.description += f" by {deleter.mention}**" if deleter is not None else "**"
         embed.set_author(name=message.author, icon_url=message.author.avatar.url)
         embed.add_field(name="Message:", value=f"{message.content}")
+        embed.add_field(
+            name="Attachments:",
+            value=f"- {'\n- '.join([f'[{a.filename}]({a.url})' for a in message.attachments])}",
+        )
         embed.set_footer(text=message.guild.name)
         await logchannel.send(embed=embed)
 
@@ -264,6 +268,12 @@ class Log(commands.Cog):
         embed.set_author(name=message_after.author, icon_url=message_after.author.avatar.url)
         embed.add_field(name="Old:", value=f"{message_before.content}")
         embed.add_field(name="New:", value=f"{message_after.content}")
+        embed.add_field(
+            name="Attachments:",
+            value=f"- {'\n- '.join([f'[{a.filename}]({a.url})' for a in list(
+                set(message_after.attachments+message_before.attachments))]
+                                   )}",
+        )
         embed.set_footer(text=message_after.guild.name)
         await logchannel.send(embed=embed)
 
