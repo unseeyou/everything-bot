@@ -225,7 +225,7 @@ class Log(commands.Cog):
             return
         deleter = None
         async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
-            if entry.target.channel.id == message.channel.id and entry.target.id == message.author.id:
+            if entry.extra.channel.id == message.channel.id and entry.target.id == message.author.id:
                 deleter = entry.user
                 logging.info("Deleter Detected")
             else:
