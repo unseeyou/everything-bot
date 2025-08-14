@@ -70,10 +70,10 @@ class Log(commands.Cog):
         user = ""
         async for entry in role_after.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_update):
             if entry.target.id == role_after.id:
-                user = " By " + entry.user.mention
+                user = entry.user.mention
         if role_before.name != role_after.name:  # Check role's name
             embed = discord.Embed(
-                title=f":pushpin: Role Name Updated{user}",
+                title=":pushpin: Role Name Updated",
                 color=0x000000,
                 timestamp=discord.utils.utcnow(),
                 description=role_after.mention,
@@ -81,6 +81,8 @@ class Log(commands.Cog):
             embed.set_author(name=role_after.guild.name, icon_url=role_after.guild.icon.url)
             embed.add_field(name="Old:", value=role_before)
             embed.add_field(name="New:", value=role_after)
+            if user:
+                embed.add_field(name="Updated By:", value=user)
             embed.set_footer(text=f"{role_after.guild.name}")
             await logchannel.send(embed=embed)
         elif role_before.permissions != role_after.permissions:  # Check role's permissions
@@ -93,12 +95,14 @@ class Log(commands.Cog):
             else:
                 in_title = "Added"
                 in_des = "added to"
-            embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow(), title=f"Role Edited{user}")
+            embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow(), title="Role Edited")
             embed.set_author(name=role_after.guild.name, icon_url=role_after.guild.icon.url)
             embed.add_field(
                 name=f":pushpin: Role Permission {in_title}",
                 value=f"{permission} {in_des} {role_after.mention}",
             )
+            if user:
+                embed.add_field(name="Updated By:", value=user)
             embed.set_footer(text=role_after.guild.name)
             await logchannel.send(embed=embed)
 
@@ -114,7 +118,7 @@ class Log(commands.Cog):
         user = ""
         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
             if entry.target.id == role.id:
-                user = " By " + entry.user.mention
+                user = " By " + entry.user.name
         embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
         embed.set_author(name=role.guild.name, icon_url=role.guild.icon.url)
         embed.add_field(name=f":pushpin: Role Deleted{user}", value=role)
@@ -132,7 +136,7 @@ class Log(commands.Cog):
             return
         user = ""
         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
-            user = " By " + entry.user.mention
+            user = " By " + entry.user.name
         embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
         embed.set_author(name=role.guild.name, icon_url=role.guild.icon.url)
         embed.add_field(name=f":pushpin: Role Created{user}", value=role)
@@ -151,10 +155,12 @@ class Log(commands.Cog):
         tuser = ""
         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.unban):
             if entry.target.id == user.id:
-                tuser = " By " + entry.user.mention
+                tuser = entry.user.mention
         embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
         embed.set_author(name=user.name, icon_url=user.avatar.url)
-        embed.add_field(name=f"⚒️ Member Unbanned{tuser}", value=user)
+        embed.add_field(name="⚒️ Member Unbanned", value=user)
+        if tuser:
+            embed.add_field(name="Action Performed By:", value=tuser)
         embed.set_thumbnail(url=user.avatar.url)
         embed.set_footer(text=guild.name)
         await logchannel.send(embed=embed)
@@ -171,10 +177,12 @@ class Log(commands.Cog):
         tuser = ""
         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
             if entry.target.id == user.id:
-                tuser = " By " + entry.user.mention
+                tuser = entry.user.mention
         embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
         embed.set_author(name=user.name, icon_url=user.avatar.url)
-        embed.add_field(name=f"⚒️ Member Banned{tuser}", value=user)
+        embed.add_field(name="⚒️ Member Banned", value=user)
+        if tuser:
+            embed.add_field(name="Action Performed By:", value=tuser)
         embed.set_thumbnail(url=user.avatar.url)
         embed.set_footer(text=guild.name)
         await logchannel.send(embed=embed)
@@ -188,7 +196,7 @@ class Log(commands.Cog):
         user = ""
         async for entry in member_after.guild.audit_logs(limit=1, action=discord.AuditLogAction.member_update):
             if entry.target.id == member_after.id:
-                user = " By " + entry.user.mention
+                user = " By " + entry.user.name
         if member_before.nick != member_after.nick:  # Check member's nickname
             embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
             embed.set_author(name=member_after.name, icon_url=member_after.avatar.url)
@@ -374,11 +382,11 @@ class Log(commands.Cog):
         logchannel = channel.guild.get_channel(logchannel_id)
         if logchannel is None:
             return
-        creator = ""
+        creator = "C"
         async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
             if channel.id == entry.extra.channel.id:
-                creator = entry.user.mention + " "
-        embed = LogEmbed(action=f"{creator}created {str(channel.type).title()} Channel `{channel.name}`")
+                creator = entry.user.name + " c"
+        embed = LogEmbed(action=f"{creator}reated {str(channel.type).title()} Channel `{channel.name}`")
         await logchannel.send(embed=embed)
 
     @Cog.listener(name="on_guild_channel_delete")
@@ -389,12 +397,12 @@ class Log(commands.Cog):
         logchannel = channel.guild.get_channel(logchannel_id)
         if logchannel is None:
             return
-        deleter = ""
+        deleter = "D"
         async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
             if entry.extra.channel.id == channel.id:
-                deleter = entry.user.mention + " "
+                deleter = entry.user.name + " d"
 
-        embed = LogEmbed(action=f"{deleter}deleted {str(channel.type).title()} Channel `{channel.name}`")
+        embed = LogEmbed(action=f"{deleter}eleted {str(channel.type).title()} Channel `{channel.name}`")
         await logchannel.send(embed=embed)
 
     @Cog.listener(name="on_guild_channel_update")
@@ -405,12 +413,17 @@ class Log(commands.Cog):
         logchannel = after.guild.get_channel(logchannel_id)
         if logchannel is None:
             return
+        creator = ""
+        async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
+            if entry.target.id == after.id:
+                creator = entry.user.mention
         embed = LogEmbed(
             action=f"Updated {str(after.type).title()} Channel `{after.name}`",
             comparison=True,
             before=before,
             after=after,
         )
+        embed.add_field(name="Updated By:", value=creator)
         await logchannel.send(embed=embed)
 
     # Guild updated (name, icon)
@@ -425,7 +438,7 @@ class Log(commands.Cog):
         user = ""
         async for entry in guild_after.audit_logs(limit=1, action=discord.AuditLogAction.guild_update):
             if entry.target.id == guild_after.id:
-                user = entry.user.mention + " "
+                user = entry.user.name + " "
         embed = LogEmbed(
             action=f"{user}Updated Server",
         )
@@ -455,7 +468,7 @@ class Log(commands.Cog):
         user = ""
         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.emoji_update):
             if entry.target.id == guild.id:
-                user = entry.user.mention + " "
+                user = entry.user.name + " "
         embed = LogEmbed(
             action=f"{user}Updated Server Emojis",
         )
@@ -484,7 +497,7 @@ class Log(commands.Cog):
         user = ""
         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.sticker_update):
             if entry.target.id == guild.id:
-                user = entry.user.mention + " "
+                user = entry.user.name + " "
         embed = LogEmbed(
             action=f"{user}Updated Server Stickers",
         )
