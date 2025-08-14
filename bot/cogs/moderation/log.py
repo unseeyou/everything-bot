@@ -223,11 +223,16 @@ class Log(commands.Cog):
         logchannel = message.guild.get_channel(logchannel_id)
         if logchannel is None:
             return
+        deleter = None
+        async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
+            deleter = entry.user
+            logging.info("Deleter Detected")
         embed = discord.Embed(
-            description=f"**Message sent by {message.author.mention} deleted in {message.channel.mention}**",
+            description=f"**Message sent by {message.author.mention} deleted in {message.channel.mention}",
             color=0x000000,
             timestamp=discord.utils.utcnow(),
         )
+        embed.description += f" by {deleter.mention}**" if deleter is not None else "**"
         embed.set_author(name=message.author, icon_url=message.author.avatar.url)
         embed.add_field(name="Message:", value=f"{message.content}")
         embed.set_footer(text=message.guild.name)

@@ -35,7 +35,7 @@ class LevelUpEmbed(Embed):
         )
         self.user = user
         self.file = create_level_icon(user.level, user.user_id)
-        self.set_author(icon_url=f"attachment://level_icon_{user.user_id}.png")
+        self.set_author(icon_url=f"attachment://level_icon_{user.user_id}.png", name="UnseebotV3")
 
 
 class Levels(commands.Cog):
