@@ -27,7 +27,7 @@ class InfractionsRepository:
     async def get_infraction_count(self, user_id: int, guild_id: int) -> int:
         async with self.database.cursor() as cursor:
             await cursor.execute(
-                "SELECT COUNT(*) FROM infractions WHERE user_id = ? AND guild_id = ?",
+                "SELECT COUNT(*) FROM infractions WHERE user_id = ? AND guild = ?",
                 (user_id, guild_id),
             )
             result = await cursor.fetchone()
@@ -409,6 +409,40 @@ class PetRepository:
             return result[0]
 
 
+class ChannelLockRepository:
+    def __init__(self, database: aiosqlite.Connection) -> None:
+        self.database = database
+
+    async def add_locked_channel(self, channel_id: int, guild_id: int) -> None:
+        async with self.database.cursor() as cursor:
+            await cursor.execute(
+                """
+                INSERT OR REPLACE INTO locked_channels (channel_id, guild_id) VALUES (?, ?)
+            """,
+                (channel_id, guild_id),
+            )
+            await self.database.commit()
+
+    async def remove_locked_channel(self, channel_id: int, guild_id: int) -> None:
+        async with self.database.cursor() as cursor:
+            await cursor.execute(
+                """
+                DELETE FROM locked_channels WHERE channel_id = ? AND guild_id = ?
+            """,
+                (channel_id, guild_id),
+            )
+
+    async def get_locked_channels(self, guild_id: int) -> list[int]:
+        async with self.database.cursor() as cursor:
+            await cursor.execute(
+                """
+                SELECT channel_id FROM locked_channels WHERE guild_id = ?
+            """,
+                (guild_id,),
+            )
+            return [row[0] for row in await cursor.fetchall()]
+
+
 @dataclass
 class SqliteRepository:
     """A repository that uses SQLite to store data."""
@@ -422,6 +456,7 @@ class SqliteRepository:
     economy: EconomyRepository = None
     staff: StaffRepository = None
     pets: PetRepository = None
+    channel_lock: ChannelLockRepository = None
 
     async def initialize(self) -> None:
         self.infractions = InfractionsRepository(self.database)
@@ -432,7 +467,9 @@ class SqliteRepository:
         self.economy = EconomyRepository(self.database)
         self.staff = StaffRepository(self.database)
         self.pets = PetRepository(self.database)
+        self.channel_lock = ChannelLockRepository(self.database)
 
+    async def create_tables(self) -> None:
         async with self.database.cursor() as cursor:
             await cursor.execute(
                 """
@@ -550,6 +587,15 @@ class SqliteRepository:
                 CREATE TABLE IF NOT EXISTS pets (
                     user_id INTEGER PRIMARY KEY,
                     pet_name TEXT NOT NULL DEFAULT 'None'
+                )
+                """,
+            )
+
+            await cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS locked_channels (
+                    channel_id INTEGER NOT NULL PRIMARY KEY,
+                    guild_id INTEGER NOT NULL
                 )
                 """,
             )

@@ -39,6 +39,12 @@ class Moderation(commands.Cog):
         default_permissions=discord.Permissions(permissions=1099511635984),
     )
 
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message) -> None:
+        locked_channels = await self.bot.database.channel_lock.get_locked_channels(message.guild.id)
+        if message.channel.id in locked_channels:
+            await message.delete()
+
     @moderation.command(name="purge", description="Purge x messages from a channel")
     async def purge(
         self,
@@ -62,6 +68,20 @@ class Moderation(commands.Cog):
             view=ClearView(),
             ephemeral=True,
         )
+
+    @moderation.command(name="lockdown", description="toggle the ability to stop people from speaking in a channel.")
+    async def lockdown_toggle(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer(thinking=True)
+        locked_channels = await self.bot.database.channel_lock.get_locked_channels(interaction.guild.id)
+        if interaction.guild.owner_id != interaction.user.id:
+            await interaction.followup.send(":no_entry_sign: Insufficient Permissions: must be server owner")
+            return
+        if interaction.channel.id in locked_channels:
+            await self.bot.database.channel_lock.remove_locked_channel(interaction.channel.id, interaction.guild.id)
+            await interaction.followup.send("🔓 Channel Unlocked Successfully!")
+        else:
+            await self.bot.database.channel_lock.add_locked_channel(interaction.channel.id, interaction.guild.id)
+            await interaction.followup.send("🔒 Channel Locked Successfully!")
 
 
 async def setup(bot: commands.Bot) -> None:

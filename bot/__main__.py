@@ -7,6 +7,8 @@ from bot.bot import Bot
 async def main() -> None:
     await bot.load_extensions("bot/cogs")
     await bot.connect_to_database()
+    await bot.database.create_tables()
+    logging.info("Database Tables Created")
     await bot.start(bot.settings.discord_bot_token)
 
 
