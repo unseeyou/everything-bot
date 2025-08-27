@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import datetime
 import json
-import logging
 from json import JSONDecodeError
 
 import aiohttp
@@ -59,16 +58,15 @@ async def check_live(channel_name: str, bot: Bot) -> None | dict | bool:
 async def create_embed(result: dict) -> discord.Embed:
     embed = discord.Embed(
         title=result["title"],
-        url=f'https://twitch.tv/{result["user_login"]}',
+        url=f"https://twitch.tv/{result['user_login']}",
         colour=discord.Colour.dark_purple(),
     )
     embed.set_image(url=result["thumbnail_url"].replace("-{width}x{height}", ""))
     embed.set_author(name=result["user_name"])  # url=result["profile_url"]
     embed.set_footer(
-        text=f"stream started at {result["started_at"]
-                                  .replace("-", "/")
-                                  .replace("T", ", ")
-                                  .replace("Z", "") + " UTC +0"}",
+        text=f"stream started at {
+            result['started_at'].replace('-', '/').replace('T', ', ').replace('Z', '') + ' UTC +0'
+        }",
     )
     embed.set_thumbnail(url=f"https://static-cdn.jtvnw.net/ttv-boxart/{result['game_id']}.jpg")
     embed.add_field(name="Playing", value=result["game_name"])
@@ -132,7 +130,7 @@ class TwitchStuff(commands.Cog):
 
     @tasks.loop(seconds=30)
     async def live_notifs_loop(self) -> None:
-        async with aopen("streamers.json", "r") as file:
+        async with aopen("streamers.json") as file:
             content = await file.read()
             json_file = json.loads(content)
             await file.close()
@@ -140,7 +138,7 @@ class TwitchStuff(commands.Cog):
             if json_file is not None:
                 pass
             else:
-                logging.warning("streamers.json file is empty")
+                self.bot.logger.warning("streamers.json file is empty")
             # iterate over each server
             for streamer in json_file:
                 if len(streamer) > 0:
@@ -167,10 +165,10 @@ class TwitchStuff(commands.Cog):
 
     @live_notifs_loop.before_loop
     async def before_live_notifs(self) -> None:
-        logging.info("initiating twitch notifs...")
+        self.bot.logger.info("initiating twitch notifs...")
         while not self.bot.is_ready():
             await asyncio.sleep(1)
-        logging.info("twitch notifs initiated")
+        self.bot.logger.info("twitch notifs initiated")
 
     twitch = app_commands.Group(name="twitch", description="twitch notifications")
 
@@ -197,7 +195,7 @@ class TwitchStuff(commands.Cog):
             "message": message,
             "pingroleID": ping_role.id,
         }  # new structure only searches for each streamer once per cycle instead of multiple times
-        async with aopen("streamers.json", "r") as file:
+        async with aopen("streamers.json") as file:
             try:
                 content = await file.read()
                 json_file = json.loads(content)
@@ -226,7 +224,7 @@ class TwitchStuff(commands.Cog):
     @app_commands.checks.has_permissions(manage_messages=True)
     async def clear_live_notifications(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer(ephemeral=True)
-        async with aopen("streamers.json", "r") as file:
+        async with aopen("streamers.json") as file:
             content = await file.read()
             json_file = json.loads(content)
             for streamer in json_file:
@@ -247,7 +245,7 @@ class TwitchStuff(commands.Cog):
     @app_commands.checks.has_permissions(manage_messages=True)
     async def remove_live_notification(self, interaction: discord.Interaction, streamer: str) -> None:
         await interaction.response.defer(ephemeral=True)
-        async with aopen("streamers.json", "r") as file:
+        async with aopen("streamers.json") as file:
             content = await file.read()
             json_file = json.loads(content)
             for s in json_file:

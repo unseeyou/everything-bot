@@ -36,8 +36,8 @@ class ApplicationEmbed(Embed):
             self.title += "rejected"
         self.description = f"Applicant: {target.mention}"
         if reason is not None:
-            self.description += f"\nReason for {"accepting" if success else "rejecting"}: {reason}"
-        self.add_field(name=f"{"Accepted" if success else "Rejected"} by", value=admin.mention)
+            self.description += f"\nReason for {'accepting' if success else 'rejecting'}: {reason}"
+        self.add_field(name=f"{'Accepted' if success else 'Rejected'} by", value=admin.mention)
         self.set_author(name=target.display_name, icon_url=target.display_avatar.url)
         self.set_footer(text=admin.display_name, icon_url=admin.display_avatar.url)
 

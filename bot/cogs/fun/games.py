@@ -34,7 +34,7 @@ class TicTacToeButton(discord.ui.Button["TicTacToe"]):
             content = f"It is now {view.players['X'].mention}'s turn (playing as X)"
         else:
             await interaction.response.send_message(
-                f'Someone else is playing as {"X" if view.current_player == view.O else "O"} already!',
+                f"Someone else is playing as {'X' if view.current_player == view.O else 'O'} already!",
                 ephemeral=True,
             )
             return
@@ -42,9 +42,9 @@ class TicTacToeButton(discord.ui.Button["TicTacToe"]):
         winner = view.check_board_winner()
         if winner is not None:
             if winner == view.X:
-                content = f'{view.players["X"].mention} won as X!'
+                content = f"{view.players['X'].mention} won as X!"
             elif winner == view.O:
-                content = f'{view.players["O"].mention} won as O!'
+                content = f"{view.players['O'].mention} won as O!"
             else:
                 content = "It's a tie!"
 

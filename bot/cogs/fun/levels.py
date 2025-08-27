@@ -103,7 +103,7 @@ class Levels(commands.Cog):
         embed = discord.Embed(title="🏆  LEADERBOARD - TOP 10 USERS", color=discord.Color.blue())
         for i, m in enumerate(member_levels[:10]):
             embed.add_field(
-                name=f"#{i+1} - {m[0].display_name}",
+                name=f"#{i + 1} - {m[0].display_name}",
                 value=f"Level: {m[1].level}\nXP: {m[1].xp:,}",
                 inline=False,
             )

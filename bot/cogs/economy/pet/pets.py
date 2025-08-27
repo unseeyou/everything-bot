@@ -16,7 +16,7 @@ class PetEmbed(discord.Embed):
     def __init__(self, message: str, pet: Pet | None) -> None:
         if pet is not None:
             super().__init__(
-                description=f"{"🐕" if pet.type == "dog" else "🐈"} {message}",
+                description=f"{'🐕' if pet.type == 'dog' else '🐈'} {message}",
                 colour=discord.Colour.dark_orange(),
             )
         else:
@@ -167,7 +167,7 @@ class PetCommands(commands.Cog):
         if pet is None:
             return
         embed = discord.Embed(
-            title=f"{"🐶" if pet.type == 'dog' else '🐱'} {interaction.user.name}'s Current Pet",
+            title=f"{'🐶' if pet.type == 'dog' else '🐱'} {interaction.user.name}'s Current Pet",
             colour=discord.Colour.from_rgb(141, 111, 100),
             description=f"### 🏷️ **Name:** {pet.name}\n### 🍕 "
             f"**Hunger:** {pet.hunger}\n### 😁 **Happiness:** {pet.happy}%",

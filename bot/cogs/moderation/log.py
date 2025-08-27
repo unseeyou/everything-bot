@@ -1,5 +1,3 @@
-import logging
-
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -260,10 +258,10 @@ class Log(commands.Cog):
         async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
             if entry.extra.channel.id == message.channel.id and entry.target.id == message.author.id:
                 deleter = entry.user
-                logging.info("Deleter Detected")
+                self.bot.logger.info("Deleter Detected")
             else:
                 deleter = message.author
-                logging.info("Deleter is self")
+                self.bot.logger.info("Deleter is self")
         embed = discord.Embed(
             description=f"**Message sent by {message.author.mention} deleted in {message.channel.mention}",
             color=0x000000,
@@ -303,9 +301,14 @@ class Log(commands.Cog):
         embed.add_field(name="New:", value=f"{message_after.content}")
         embed.add_field(
             name="Attachments:",
-            value=f"- {'\n- '.join([f'[{a.filename}]({a.url})' for a in list(
-                set(message_after.attachments+message_before.attachments))]
-                                   )}",
+            value=f"- {
+                '\n- '.join(
+                    [
+                        f'[{a.filename}]({a.url})'
+                        for a in list(set(message_after.attachments + message_before.attachments))
+                    ]
+                )
+            }",
         )
         embed.set_footer(text=message_after.guild.name)
         await logchannel.send(embed=embed)
@@ -520,13 +523,13 @@ class Log(commands.Cog):
     async def set_channel(self, interaction: discord.Interaction, channel: discord.TextChannel) -> None:
         await self.bot.database.logs.set_log_channel(interaction.guild.id, channel.id)
         await interaction.response.send_message(f"Set log channel to {channel.mention}!")
-        logging.info(f"{interaction.user.name} set log channel of {interaction.guild.id} to {channel.id}")  # noqa: G004
+        self.bot.logger.info(f"{interaction.user.name} set log channel of {interaction.guild.id} to {channel.id}")  # noqa: G004
 
     @log.command(name="unset_channel", description="unset the log channel")
     async def unset_channel(self, interaction: discord.Interaction) -> None:
         await self.bot.database.logs.set_log_channel(interaction.guild.id, None)
         await interaction.response.send_message("Unset log channel!")
-        logging.info(f"{interaction.user.name} unset log channel of {interaction.guild.id}")  # noqa: G004
+        self.bot.logger.info(f"{interaction.user.name} unset log channel of {interaction.guild.id}")  # noqa: G004
 
     @log.command(name="query_channel", description="get the current log channel")
     async def query_channel(self, interaction: discord.Interaction) -> None:

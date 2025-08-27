@@ -43,8 +43,8 @@ class Bank(commands.Cog):
         user = EconomyUser(interaction.user.id, balance[0], balance[1], Inventory.from_string(balance[2]), self.bot)
         embed = discord.Embed(
             title=f"{member.display_name}'s balance",
-            description=f"**Wallet**: {user.wallet_balance/100:.2f} :coin:"
-            f"\n**Bank**: {user.bank_balance/100:.2f} :coin:",
+            description=f"**Wallet**: {user.wallet_balance / 100:.2f} :coin:"
+            f"\n**Bank**: {user.bank_balance / 100:.2f} :coin:",
             color=discord.Colour.og_blurple(),
         )
         await interaction.response.send_message(embed=embed)
@@ -63,7 +63,7 @@ class Bank(commands.Cog):
             return
         await user.edit_bank(amount)
         await user.edit_wallet(-amount)
-        await interaction.response.send_message(f"Deposited {amount/100} :coin: into your bank!")
+        await interaction.response.send_message(f"Deposited {amount / 100} :coin: into your bank!")
 
     @bank.command(name="withdraw", description="Withdraw money from your bank into your wallet")
     async def withdraw(self, interaction: discord.Interaction, amount: float) -> None:
@@ -79,7 +79,7 @@ class Bank(commands.Cog):
             return
         await user.edit_bank(-amount)
         await user.edit_wallet(amount)
-        await interaction.response.send_message(f"Withdrew {amount/100} :coin: from your bank!")
+        await interaction.response.send_message(f"Withdrew {amount / 100} :coin: from your bank!")
 
     @bank.command(name="transfer", description="Transfer money from your wallet to someone else")
     async def transfer(self, interaction: discord.Interaction, member: discord.Member, amount: float) -> None:
@@ -107,7 +107,7 @@ class Bank(commands.Cog):
         )
         await target.edit_wallet(amount)
         await interaction.response.send_message(
-            f"Transferred {amount/100} :coin: from your wallet to {member.mention}!",
+            f"Transferred {amount / 100} :coin: from your wallet to {member.mention}!",
         )
 
 
