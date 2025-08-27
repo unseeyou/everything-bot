@@ -232,6 +232,7 @@ class Log(commands.Cog):
             embed = discord.Embed(color=0x000000, timestamp=discord.utils.utcnow())
             embed.set_author(name=member_after.name, icon_url=member_after.avatar.url)
             embed.add_field(name=f":house: Member's Timeout{user}", value=f"{member_after.mention} got timeout")
+            embed.add_field(name="Timeout Ends", value=f"<t:{member_after.timed_out_until.timestamp()}:F>")
             embed.set_thumbnail(url=member_after.display_avatar.url)
             embed.set_footer(text=member_after.guild.name)
             channel = self.bot.get_channel(log_channel)
