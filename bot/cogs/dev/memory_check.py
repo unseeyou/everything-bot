@@ -8,16 +8,14 @@ from bot.bot import Bot
 
 
 class DevEmbed(discord.Embed):
-    def __init__(self) -> None:
+    def __init__(self, previous: float) -> None:
         super().__init__(color=discord.Color.from_rgb(145, 71, 71))
         self.title = "Current Bot Memory Usage"
-        url = "https://implyingrigged.info/w/images/thumb/2/2a/Out_of_date.svg/124px-Out_of_date.svg.png"
-        self.set_author(
-            name="Current Memory Usage",
-            icon_url=url,
-        )
-        mem_used = self.get_used_memory()
-        self.description = f"I currently using `{mem_used:.2f}MB` of memory."
+        url = "https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg"
+        self.set_author(name="Memory Usage Lookup", icon_url=url)
+        self.mem_used = self.get_used_memory()
+        self.description = f"I currently using `{self.mem_used:.2f}MB` of memory."
+        self.set_footer(text=f"Previous Check: {previous}MB")
 
     def get_used_memory(self) -> float:
         process = psutil.Process(os.getpid())
@@ -27,11 +25,14 @@ class DevEmbed(discord.Embed):
 class CheckMemory(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+        self.previous_usage = -1.0
 
     @commands.command(name="memory", aliases=["ram", "getram", "getmem", "mem"])
     @commands.is_owner()
     async def _memory(self, ctx: commands.Context) -> None:
-        await ctx.send(embed=DevEmbed())
+        embed = DevEmbed(self.previous_usage)
+        self.previous_usage = embed.mem_used
+        await ctx.send(embed=embed)
 
 
 async def setup(bot: Bot) -> None:
