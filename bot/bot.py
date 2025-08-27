@@ -56,10 +56,10 @@ class Bot(commands.Bot):
 
         @self.event
         async def setup_hook() -> None:
-            logging.info("Syncing commands...")
+            self.logger.info("Syncing commands...")
             cmds = await self.tree.sync(guild=None)
-            logging.info("Sync complete!")
-            logging.info(f"Loaded {len(cmds)} commands / command groups!")  # noqa: G004
+            self.logger.info("Sync complete!")
+            self.logger.info(f"Loaded {len(cmds)} commands / command groups!")  # noqa: G004
             self.logger.info("Loading reaction role views")
             self.add_dynamic_items(PersistentRoleButton)
             self.logger.info("Reaction roles loaded")
@@ -75,5 +75,5 @@ class Bot(commands.Bot):
 
     async def load_extensions(self, path: str) -> None:
         for file in utils.search_directory(path):
-            logging.info(f"Loading extension: {file}")  # noqa: G004
+            self.logger.info(f"Loading extension: {file}")  # noqa: G004
             await self.load_extension(file)

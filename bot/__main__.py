@@ -1,5 +1,4 @@
 import asyncio
-import logging
 
 from bot.bot import Bot
 
@@ -8,7 +7,7 @@ async def main() -> None:
     await bot.load_extensions("bot/cogs")
     await bot.connect_to_database()
     await bot.database.create_tables()
-    logging.info("Database Tables Created")
+    bot.logger.info("Database Tables Created")
     await bot.start(bot.settings.discord_bot_token)
 
 
@@ -24,7 +23,7 @@ if __name__ == "__main__":
     try:
         loop.run_until_complete(main())
     except KeyboardInterrupt:
-        logging.info("Shutting down bot...")
+        bot.logger.info("Shutting down bot...")
     finally:
         loop.run_until_complete(shutdown())
         loop.stop()
