@@ -14,8 +14,8 @@ class DevEmbed(discord.Embed):
         url = "https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg"
         self.set_author(name="Memory Usage Lookup", icon_url=url)
         self.mem_used = self.get_used_memory()
-        self.description = f"I currently using `{self.mem_used:.2f}MB` of memory."
-        self.set_footer(text=f"Previous Check: {previous}MB")
+        self.description = f"I currently using `{self.mem_used:.2f} MB` of memory."
+        self.set_footer(text=f"Previous Check: {previous:.2f} MB")
 
     def get_used_memory(self) -> float:
         process = psutil.Process(os.getpid())
