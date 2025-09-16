@@ -41,6 +41,8 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
+        if message.guild is None:
+            return
         locked_channels = await self.bot.database.channel_lock.get_locked_channels(message.guild.id)
         if message.channel.id in locked_channels and message.author.id != self.bot.application_id:
             await message.delete()
