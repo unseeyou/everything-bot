@@ -260,10 +260,8 @@ class Log(commands.Cog):
         async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
             if entry.extra.channel.id == message.channel.id and entry.target.id == message.author.id:
                 deleter = entry.user
-                self.bot.logger.info("Deleter Detected")
             else:
                 deleter = message.author
-                self.bot.logger.info("Deleter is self")
         embed = discord.Embed(
             description=f"**Message sent by {message.author.mention} deleted in {message.channel.mention}",
             color=0x000000,
