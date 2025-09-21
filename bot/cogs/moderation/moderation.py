@@ -44,7 +44,11 @@ class Moderation(commands.Cog):
         if message.guild is None:
             return
         locked_channels = await self.bot.database.channel_lock.get_locked_channels(message.guild.id)
-        if message.channel.id in locked_channels and message.author.id != self.bot.application_id:
+        if (
+            message.channel.id in locked_channels
+            and message.author.id != self.bot.application_id
+            or locked_channels == message.author.id
+        ):
             await message.delete()
 
     @moderation.command(name="purge", description="Purge x messages from a channel")
@@ -84,6 +88,20 @@ class Moderation(commands.Cog):
         else:
             await self.bot.database.channel_lock.add_locked_channel(interaction.channel.id, interaction.guild.id)
             await interaction.followup.send("🔒 Channel Locked Successfully!")
+
+    @moderation.command(name="silence", description="toggle the ability to silence a server member.")
+    async def silence_toggle(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        await interaction.response.defer(thinking=True)
+        locked_channels = await self.bot.database.channel_lock.get_locked_channels(interaction.guild.id)
+        if interaction.guild.owner_id != interaction.user.id:
+            await interaction.followup.send(":no_entry_sign: Insufficient Permissions: must be server owner")
+            return
+        if member.id in locked_channels:
+            await self.bot.database.channel_lock.remove_locked_channel(member.id, interaction.guild.id)
+            await interaction.followup.send(f"🤫 {member.mention} has been silenced.")
+        else:
+            await self.bot.database.channel_lock.add_locked_channel(member.id, interaction.guild.id)
+            await interaction.followup.send(f"{member.mention}'s voice has been given back.")
 
 
 async def setup(bot: commands.Bot) -> None:
