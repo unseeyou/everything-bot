@@ -47,7 +47,7 @@ class Moderation(commands.Cog):
         if (
             message.channel.id in locked_channels
             and message.author.id != self.bot.application_id
-            or locked_channels == message.author.id
+            or message.author.id in locked_channels
         ):
             await message.delete()
 
@@ -96,7 +96,7 @@ class Moderation(commands.Cog):
         if interaction.guild.owner_id != interaction.user.id:
             await interaction.followup.send(":no_entry_sign: Insufficient Permissions: must be server owner")
             return
-        if member.id in locked_channels:
+        if member.id not in locked_channels:
             await self.bot.database.channel_lock.remove_locked_channel(member.id, interaction.guild.id)
             await interaction.followup.send(f"🤫 {member.mention} has been silenced.")
         else:
