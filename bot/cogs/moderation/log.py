@@ -32,7 +32,7 @@ class LogEmbed(discord.Embed):
             if before.type != after.type:
                 changes.append(f"**Type:**\n{before.type} -> {after.type}")
             if before.overwrites != after.overwrites:
-                changes.append(f"**Overwrites:**\n{before.overwrites} -> {after.overwrites}")
+                changes.append(f"**Overwrites:**\n{before.overwrites.items()} -> {after.overwrites.items()}")
             if before.position != after.position:
                 changes.append(f"**Position:**\n{before.position} -> {after.position}")
             if before.changed_roles != after.changed_roles:
