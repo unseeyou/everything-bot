@@ -57,16 +57,18 @@ class Moderation(commands.Cog):
                 )
                 return
             self.currently_roll_assigning.append(inter.guild.id)  # yay fixed the race condition hopefully
-        for member in members:
-            try:
-                await member.add_roles(role)
-                await asyncio.sleep(0.42)  # this is probably good enough
-            except discord.Forbidden:
-                result = f"Error: Missing permissions to update roles for {member.name}"
-                await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
-            except discord.HTTPException as e:
-                result = f"Error: Failed to update roles for {member.name}: {e}"
-                await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
+        grouped_members = [members[i : i + 10] for i in range(0, len(members), 10)]
+        for group in grouped_members:
+            for member in group:
+                try:
+                    await member.add_roles(role)  # this is probably good enough
+                except discord.Forbidden:
+                    result = f"Error: Missing permissions to update roles for {member.name}"
+                    await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
+                except discord.HTTPException as e:
+                    result = f"Error: Failed to update roles for {member.name}: {e}"
+                    await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
+            await asyncio.sleep(1)
         result = f"Success! {role.mention} added to {len(members)} member(s)."
         await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
         self.currently_roll_assigning.remove(inter.guild.id)
