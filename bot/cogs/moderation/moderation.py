@@ -35,6 +35,7 @@ class ClearView(discord.ui.View):
 class Moderation(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.currently_roll_assigning = []
 
     moderation = app_commands.Group(
         name="moderation",
@@ -42,16 +43,31 @@ class Moderation(commands.Cog):
         default_permissions=discord.Permissions(permissions=1099511635984),
     )
 
-    async def mass_give_roles(self, members: Sequence[discord.Member], role: discord.Role) -> str:
+    async def mass_give_roles(
+        self,
+        members: Sequence[discord.Member],
+        role: discord.Role,
+        inter: discord.Interaction,
+    ) -> None:
+        if inter.guild.id in self.currently_roll_assigning:
+            await inter.channel.send(
+                "This guild already has a /roleall task running! Please wait before calling this command again.",
+            )
+            return
+        self.currently_roll_assigning.append(inter.guild.id)
         for member in members:
             try:
                 await member.add_roles(role)
                 await asyncio.sleep(0.42)  # this is probably good enough
             except discord.Forbidden:
-                return f"Error: Missing permissions to update roles for {member.name}"
+                result = f"Error: Missing permissions to update roles for {member.name}"
+                await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
             except discord.HTTPException as e:
-                return f"Error: Failed to update roles for {member.name}: {e}"
-        return f"Success! {role.mention} added to {len(members)} member(s)."
+                result = f"Error: Failed to update roles for {member.name}: {e}"
+                await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
+        result = f"Success! {role.mention} added to {len(members)} member(s)."
+        await inter.channel.send(result + f"\n{inter.user.mention}", silent=True)
+        self.currently_roll_assigning.remove(inter.guild.id)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -119,9 +135,7 @@ class Moderation(commands.Cog):
     @app_commands.default_permissions(manage_roles=True)
     async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
         await interaction.response.send_message("Assigning roles in the background...")
-        task = asyncio.create_task(self.mass_give_roles(interaction.guild.members, role))
-        result = await task
-        await interaction.channel.send(result + f"\n{interaction.user.mention}", silent=True)
+        await asyncio.create_task(self.mass_give_roles(interaction.guild.members, role, interaction))
 
 
 async def setup(bot: commands.Bot) -> None:
