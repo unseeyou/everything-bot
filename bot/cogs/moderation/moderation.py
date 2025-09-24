@@ -49,12 +49,14 @@ class Moderation(commands.Cog):
         role: discord.Role,
         inter: discord.Interaction,
     ) -> None:
-        if inter.guild.id in self.currently_roll_assigning:
-            await inter.channel.send(
-                "This guild already has a /roleall task running! Please wait before calling this command again.",
-            )
-            return
-        self.currently_roll_assigning.append(inter.guild.id)
+        lock = asyncio.Lock()
+        async with lock:
+            if inter.guild.id in self.currently_roll_assigning:
+                await inter.channel.send(
+                    "This guild already has a /roleall task running! Please wait before calling this command again.",
+                )
+                return
+            self.currently_roll_assigning.append(inter.guild.id)  # yay fixed the race condition hopefully
         for member in members:
             try:
                 await member.add_roles(role)
@@ -136,6 +138,7 @@ class Moderation(commands.Cog):
     async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
         await interaction.response.send_message("Assigning roles in the background...")
         await asyncio.create_task(self.mass_give_roles(interaction.guild.members, role, interaction))
+        # TODO: probably not best practice to make a task in the command, hopefully will fix soon
 
 
 async def setup(bot: commands.Bot) -> None:
