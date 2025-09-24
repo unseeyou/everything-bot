@@ -1,3 +1,6 @@
+import asyncio
+from collections.abc import Sequence
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -38,6 +41,17 @@ class Moderation(commands.Cog):
         description="Moderation commands",
         default_permissions=discord.Permissions(permissions=1099511635984),
     )
+
+    async def mass_give_roles(self, members: Sequence[discord.Member], role: discord.Role) -> str:
+        for member in members:
+            try:
+                await member.add_roles(role)
+                await asyncio.sleep(0.42)  # this is probably good enough
+            except discord.Forbidden:
+                return f"Error: Missing permissions to update roles for {member.name}"
+            except discord.HTTPException as e:
+                return f"Error: Failed to update roles for {member.name}: {e}"
+        return f"Success! {role.mention} added to {len(members)} member(s)."
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -105,10 +119,9 @@ class Moderation(commands.Cog):
     @app_commands.default_permissions(manage_roles=True)
     async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
-        for member in interaction.guild.members:
-            if role not in member.roles:
-                await member.add_roles(role)
-        await interaction.followup.send(f"Gave {len(interaction.guild.members)} member(s) {role.mention}")
+        task = asyncio.create_task(self.mass_give_roles(interaction.guild.members, role))
+        result = await task
+        await interaction.channel.send(result)
 
 
 async def setup(bot: commands.Bot) -> None:
