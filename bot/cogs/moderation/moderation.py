@@ -121,7 +121,7 @@ class Moderation(commands.Cog):
         await interaction.response.send_message("Assigning roles in the background...")
         task = asyncio.create_task(self.mass_give_roles(interaction.guild.members, role))
         result = await task
-        await interaction.channel.send(result + f"\n{interaction.user.mention}")
+        await interaction.channel.send(result + f"\n{interaction.user.mention}", silent=True)
 
 
 async def setup(bot: commands.Bot) -> None:
