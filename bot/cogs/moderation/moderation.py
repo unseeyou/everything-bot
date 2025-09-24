@@ -106,7 +106,8 @@ class Moderation(commands.Cog):
     async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
         await interaction.response.defer(thinking=True, ephemeral=True)
         for member in interaction.guild.members:
-            await member.add_roles(role)
+            if role not in member.roles:
+                await member.add_roles(role)
         await interaction.followup.send(f"Gave {len(interaction.guild.members)} member(s) {role.mention}")
 
 
