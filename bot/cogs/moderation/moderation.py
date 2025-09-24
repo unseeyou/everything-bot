@@ -118,10 +118,10 @@ class Moderation(commands.Cog):
     @moderation.command(name="roleall", description="give all members a role")
     @app_commands.default_permissions(manage_roles=True)
     async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
-        await interaction.response.defer(thinking=True, ephemeral=True)
+        await interaction.response.send_message("Assigning roles in the background...")
         task = asyncio.create_task(self.mass_give_roles(interaction.guild.members, role))
         result = await task
-        await interaction.channel.send(result)
+        await interaction.channel.send(result + f"\n{interaction.user.mention}")
 
 
 async def setup(bot: commands.Bot) -> None:
