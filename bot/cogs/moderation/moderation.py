@@ -101,6 +101,14 @@ class Moderation(commands.Cog):
             await self.bot.database.channel_lock.add_locked_channel(member.id, interaction.guild.id)
             await interaction.followup.send(f"🤫 {member.mention} has been silenced.")
 
+    @moderation.command(name="roleall", description="give all members a role")
+    @app_commands.default_permissions(manage_roles=True)
+    async def _roleall(self, interaction: discord.Interaction, role: discord.Role) -> None:
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        for member in interaction.guild.members:
+            await member.add_roles(role)
+        await interaction.followup.send(f"Gave {len(interaction.guild.members)} member(s) {role.mention}")
+
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Moderation(bot))
