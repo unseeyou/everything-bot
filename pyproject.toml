@@ -18,6 +18,7 @@ dependencies = [
     "psutil>=7.0.0",
     "google>=3.0.0",
     "google-genai>=1.38.0",
+    "pynacl>=1.6.0",
 ]
 description = "An all purpose discord bot with a lot of features"
 readme = "README.md"
@@ -95,7 +96,6 @@ reportUnusedCallResult = "none"
 reportUnknownVariableType = "none"
 reportUnknownMemberType = "none"
 reportImplicitStringConcatenation = "none"
-
 
 [tool.pytest.ini_options]
 minversion = "8.2"
