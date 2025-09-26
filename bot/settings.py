@@ -23,4 +23,3 @@ class Settings(BaseSettings):
     database_path: str = "game.db"
     twitch_client_id: str
     twitch_secret: str
-    google_api_key: str

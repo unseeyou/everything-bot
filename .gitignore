@@ -244,3 +244,4 @@ test.db
 /pdm.lock
 /game.db
 /e.py
+/tts-model/
