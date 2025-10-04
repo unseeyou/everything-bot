@@ -11,7 +11,7 @@ from bot.bot import Bot
 class Voice(Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
-        self.ALLOW_LIST = [650923352097292299]
+        self.ALLOW_LIST = [650923352097292299, 885463129226612776, 628767084897370112]  # discord user IDs
 
         self.SAMPLE_RATE = 22050
         self.CHANNELS = 1
