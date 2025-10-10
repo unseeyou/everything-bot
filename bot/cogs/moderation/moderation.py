@@ -6,6 +6,23 @@ from discord import app_commands
 from discord.ext import commands
 
 
+class NotificationEmbed(discord.Embed):
+    def __init__(self, member: discord.Member, author: discord.Member, guild: discord.Guild, silenced: bool) -> None:
+        super().__init__(
+            title=f"You have been {"un" if not silenced else ""}silenced in {guild.name}",
+            description=f"Action performed by: {author.name}",
+            timestamp=discord.utils.utcnow(),
+        )
+        self.set_author(
+            name=member.name,
+            icon_url=member.display_avatar.url,
+        )
+        self.target = member
+
+    async def send(self) -> None:
+        await self.target.send(embed=self)
+
+
 class ClearView(discord.ui.View):
     def __init__(self) -> None:
         super().__init__(timeout=60.0)
@@ -131,9 +148,12 @@ class Moderation(commands.Cog):
         if member.id in locked_channels:
             await self.bot.database.channel_lock.remove_locked_channel(member.id, interaction.guild.id)
             await interaction.followup.send(f"{member.mention}'s voice has been given back.")
+            silenced = False
         else:
             await self.bot.database.channel_lock.add_locked_channel(member.id, interaction.guild.id)
             await interaction.followup.send(f"🤫 {member.mention} has been silenced.")
+            silenced = True
+        await NotificationEmbed(member, interaction.user, interaction.guild, silenced).send()
 
     @moderation.command(name="roleall", description="give all members a role")
     @app_commands.default_permissions(manage_roles=True)
